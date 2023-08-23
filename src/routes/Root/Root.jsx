@@ -21,7 +21,7 @@ function Root(){
 
     return (
         <>
-            <Navbar isAuthenticated=""/>
+            <Navbar isAuthenticated={true}/>
             <Outlet/>
         </>
     )
