@@ -1,0 +1,7 @@
+.navbar{
+    transition: .4s;
+    left: -30%;
+    &__show{
+        left: 0;
+    }
+}

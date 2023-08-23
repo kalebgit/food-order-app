@@ -13,12 +13,16 @@ import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import {useState} from 'react'
 import {Link} from 'react-router-dom'
 
+//mycomponents
+import NavLinksContainer from '../NavLinksContainer/NavLinksContainer';
+
+import './Navbar.scss'
 function Navbar({isAuthenticated}){
     
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [showNavbar, setShowNavbar] = useState(false);
 
     const onClickOptions = ()=>{
-
+        setShowNavbar((prevState)=>!prevState);
     }
 
     return (
@@ -51,28 +55,33 @@ function Navbar({isAuthenticated}){
             
             </section>  
             }
-            <nav className="absolute left-0 top-0 w-1/4 h-full bg-white p-2 z-50 
-            divide-y">
+            <nav className={`navbar absolute top-0 w-1/4 h-full bg-white p-2 z-50 divide-y ${showNavbar ? 'navbar__show': ''}`}>
                 <section className="flex flex-row flex-nowrap justify-between items-center ">
                     <IconButton>
                         <LogoDevIcon/>
                     </IconButton>
-                    <IconButton>
+                    <IconButton onClick={onClickOptions}>
                         <CloseIcon/>
                     </IconButton>
                 </section>
-                <section classN>
-                    <Link to="">
-                        <Button variant="text" startIcon={<HomeIcon/>}>Home</Button>
+                <NavLinksContainer>
+                    <Link to="" className="w-full">
+                        <Button variant="text" startIcon={<HomeIcon/>}
+                        className='w-full' >Home</Button>
                     </Link>
                     
-                    <Link to="">
-                        <Button variant="text" startIcon={<WhatshotIcon/>}>Trend</Button>
+                    <Link to="" className="w-full">
+                        <Button variant="text" startIcon={<WhatshotIcon/>}
+                        className='w-full' >Trend</Button>
                     </Link>
 
-                    <Link to="">
-                        <Button variant="text" startIcon={<QueryStatsIcon/>}>Stats</Button>
+                    <Link to="" className="w-full">
+                        <Button variant="text" startIcon={<QueryStatsIcon/>}
+                        className='w-full' >Stats</Button>
                     </Link>
+                </NavLinksContainer>
+                <section >
+                    
                 </section>
             </nav>
         </header>
