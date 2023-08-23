@@ -1,5 +1,6 @@
 .effect{
     pointer-events: none;
+    z-index: 50000;
     &__black{
         background-color: rgba(0, 0, 0, 0.3);
     }

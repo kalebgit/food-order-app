@@ -1,5 +1,5 @@
 import {useState, useRef, useEffect} from 'react'
-import ReactDOM from 'react-dom'
+
 import { useOutletContext } from 'react-router-dom';
 //sytles
 import './Account.scss'
@@ -36,7 +36,7 @@ function Account(){
     const confirmationPassword = useRef();
 
 
-    //recuperar informacion del storage para actualizar el estado
+    //recuperar informacion del storage para actualizar el estado de autenticacion
     useEffect(()=>{
         const StorageIsLoggedIn = localStorage.getItem('isLogged');
         if(StorageIsLoggedIn == '1'){

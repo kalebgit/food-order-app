@@ -10,9 +10,17 @@ import Effect from '../../page/Effect/Effect';
 function Root(){
     const [data, setData] = useState({isLoggedIn: false});
 
+    const onLogout = ()=>{
+        setData( (prevState)=>{
+            return {isLoggedIn: false}
+        })
+
+        localStorage.removeItem('isLogged')
+    }
+
     return (
         <>
-            <Navbar isAuthenticated={data.isLoggedIn}/>
+            <Navbar isAuthenticated={data.isLoggedIn} onLogout={onLogout}/>
             <Outlet context={[data, setData]}/>
         </>
     )
