@@ -15,7 +15,7 @@ import Link from '@mui/material/Link';
 
 //images
 import AccountFormImage from '../../assets/img/account/account-form.jpg'
-import { Button } from '@mui/base';
+import { Button } from '@mui/material';
 
 function Account(){
     const [typeForm, setTypeForm] = useState({register: true, login: false});
@@ -48,9 +48,8 @@ function Account(){
             <p>Ya tienes cuenta? <Link underline="hover" 
             onClick={onClickType}>Inicia Sesion</Link></p>,
 
-            <Button variant="contained" onClick={()=>{}}
-            className=' bg-amber-300 hover:bg-amber-400 py-2 px-3 rounded-lg'>
-                <span className=" text-amber-700 font-bold">Registrate</span>
+            <Button variant='contained' onClick={()=>{}}>
+                Registrate
             </Button>
     ] : [
         <TextField id="username" key="username" label="Nombre de usuario" variant="outlined" type="text" 
@@ -60,25 +59,13 @@ function Account(){
         <TextField id="password" key="password" label="Contraseña" variant="outlined" type="password" 
             required={true}
             placeholder='Escriba aqui...' error={false} helperText="" 
-            size="small" fullWidth={true}
-            // InputProps={{endAdornment: <InputAdornment position="end">
-            //     <IconButton
-            //       aria-label="toggle password visibility"
-            //       onClick={handleClickShowPassword}
-            //       onMouseDown={handleMouseDownPassword}
-            //       edge="end"
-            //     >
-            //       {showPassword ? <VisibilityOff /> : <Visibility />}
-            //     </IconButton>
-            // </InputAdornment>}}
-            />,
+            size="small" fullWidth={true}/>,
 
         <p>No tienes cuenta? <Link underline="hover" 
             onClick={onClickType}>Registrate</Link></p>,
 
-        <Button variant="contained" onClick={()=>{}}
-            className=' bg-amber-300 hover:bg-amber-400 py-2 px-3 rounded-lg'>
-                <span className=" text-amber-700 font-bold">Iniciar Sesion</span>
+            <Button variant='contained' onClick={()=>{}}>
+                Iniciar Sesion
             </Button>
     ];
 

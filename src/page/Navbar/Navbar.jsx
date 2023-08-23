@@ -3,10 +3,16 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import MenuIcon from '@mui/icons-material/Menu';
 import { IconButton, Toolbar, Tooltip } from '@mui/material';
-
-
+import HomeIcon from '@mui/icons-material/Home';
+import CloseIcon from '@mui/icons-material/Close';
+import { Button } from '@mui/material';
+import LogoDevIcon from '@mui/icons-material/LogoDev';
+import WhatshotIcon from '@mui/icons-material/Whatshot';
+import QueryStatsIcon from '@mui/icons-material/QueryStats';
 //react
 import {useState} from 'react'
+import {Link} from 'react-router-dom'
+
 function Navbar({isAuthenticated}){
     
     const [isExpanded, setIsExpanded] = useState(false);
@@ -44,13 +50,29 @@ function Navbar({isAuthenticated}){
                 </div>
             
             </section>  
-        }
-            <nav className=" w-1/5 bg-white">
-                <section>
-
+            }
+            <nav className="absolute left-0 top-0 w-1/4 h-full bg-white p-2 z-50 
+            divide-y">
+                <section className="flex flex-row flex-nowrap justify-between items-center ">
+                    <IconButton>
+                        <LogoDevIcon/>
+                    </IconButton>
+                    <IconButton>
+                        <CloseIcon/>
+                    </IconButton>
                 </section>
-                <section>
+                <section classN>
+                    <Link to="">
+                        <Button variant="text" startIcon={<HomeIcon/>}>Home</Button>
+                    </Link>
+                    
+                    <Link to="">
+                        <Button variant="text" startIcon={<WhatshotIcon/>}>Trend</Button>
+                    </Link>
 
+                    <Link to="">
+                        <Button variant="text" startIcon={<QueryStatsIcon/>}>Stats</Button>
+                    </Link>
                 </section>
             </nav>
         </header>
