@@ -1,6 +1,6 @@
-import {useState, useRef} from 'react'
+import {useState, useRef, useEffect} from 'react'
 import ReactDOM from 'react-dom'
-
+import { useOutletContext } from 'react-router-dom';
 //sytles
 import './Account.scss'
 
@@ -22,9 +22,11 @@ import Effect from '../../page/Effect/Effect';
 import { PasswordRounded } from '@mui/icons-material';
 
 function Account(){
+    //contexto de router dom
+    const [data, setData] = useOutletContext();
+
     // define el tipo de formulario (inicar sesion o registrarse)
     const [typeForm, setTypeForm] = useState({register: true, login: false});
-
     // estado que indica si la contrsenia es correcta 
     const [equals, setEquals] = useState(true);
 
@@ -33,7 +35,16 @@ function Account(){
     const password = useRef();
     const confirmationPassword = useRef();
 
-    
+
+    //recuperar informacion del storage para actualizar el estado
+    useEffect(()=>{
+        const StorageIsLoggedIn = localStorage.getItem('isLogged');
+        if(StorageIsLoggedIn == '1'){
+            setData((prevState)=>{
+                return {isLoggedIn: true}
+            })
+        }
+    }, [])
 
     //metodo que cambia el estado para que se muestre el nav
     const onClickType = (event)=>{
@@ -44,7 +55,7 @@ function Account(){
         })
     }
 
-
+    //handler para registrar una cuenta
     const onRegister = (event)=>{
         event.preventDefault();
         if(password.current.value != confirmationPassword.current.value){
@@ -54,8 +65,15 @@ function Account(){
         }
     }
 
+
+    //handler para iniciar sesion
     const onLogin = (event)=>{
         event.preventDefault();
+        localStorage.setItem('isLogged', '1');
+        setData((prevState)=>{
+            return {isLoggedIn: true}
+        })
+        
     }
 
 
@@ -75,7 +93,7 @@ function Account(){
 
 
             typeForm.register ? 
-                <TextField id="password" key="password" label="Repite la Contraseña" variant="outlined" type="password" 
+                <TextField id="confirmationpassword" key="confirmationpassword" label="Repite la Contraseña" variant="outlined" type="password" 
                 required={true}
                 placeholder='Escriba aqui...' error={!equals} 
                 helperText={`${typeForm.register ? (!equals ? 'No coinciden las contraseñas' : '') : ''}`}
@@ -86,17 +104,23 @@ function Account(){
             : <></>,
 
             typeForm.register ? 
-            <p>Ya tienes cuenta? <Link underline="hover" 
-            onClick={onClickType}>Inicia Sesion</Link></p> : 
-            <p>No tienes cuenta? <Link underline="hover" 
-            onClick={onClickType}>Registrate</Link></p>,
+            <p  key="LoginMessage">
+                Ya tienes cuenta? 
+                <Link underline="hover" onClick={onClickType}> Inicia Sesion</Link>
+            </p> 
+            : 
+            <p key="RegisterMessage">
+                No tienes cuenta? 
+                <Link underline="hover" onClick={onClickType} > Registrate</Link>
+            </p>,
 
-            <Button variant='contained' type="submit">
+            <Button variant='contained' type="submit" key="submit">
                 {typeForm.register ? "Registrar" : "Iniciar Sesion"}
             </Button>
             
     ]
 
+    //componente
     return (
         <main className="account__main min-h-screen p-6 flex flex-col justify-center ">
             <Card hasImage={true} image={AccountFormImage}>

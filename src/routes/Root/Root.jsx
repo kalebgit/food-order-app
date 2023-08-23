@@ -8,22 +8,12 @@ import Navbar from '../../page/Navbar/Navbar'
 import Effect from '../../page/Effect/Effect';
 
 function Root(){
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    const loginHandler = (email, password) => {
-      // We should of course check email and password
-      // But it's just a dummy/ demo anyways
-        setIsLoggedIn(true);
-    };
-
-    const logoutHandler = () => {
-        setIsLoggedIn(false);
-    };
+    const [data, setData] = useState({isLoggedIn: false});
 
     return (
         <>
-            <Navbar isAuthenticated={true}/>
-            <Outlet/>
+            <Navbar isAuthenticated={data.isLoggedIn}/>
+            <Outlet context={[data, setData]}/>
         </>
     )
 }
