@@ -1,4 +1,5 @@
 import {useState, useRef} from 'react'
+import ReactDOM from 'react-dom'
 
 //sytles
 import './Account.scss'
@@ -17,6 +18,7 @@ import Link from '@mui/material/Link';
 import AccountFormImage from '../../assets/img/account/account-form.jpg'
 import { Button } from '@mui/material';
 import Modal from '../../components/Modals/Modal/Modal';
+import Effect from '../../page/Effect/Effect';
 
 function Account(){
     // define el tipo de formulario (inicar sesion o registrarse)
@@ -95,7 +97,6 @@ function Account(){
                     {inputs}
                 </Form>
             </Card>
-            <Modal/>
         </main>
         
     )

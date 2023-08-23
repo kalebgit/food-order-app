@@ -1,8 +1,8 @@
+import './Effect.scss'
 
-
-function Effect(){
+function Effect({blur, black}){
     return (
-        <section className=" absolute w-screen h-screen top-0 left-0 z-40"></section>
+        <section className={`effect absolute w-screen h-screen top-0 left-0 z-40 ${blur ? 'effect__blur': ''} ${black ? 'effect__black': ''}`}></section>
     )
 }
 
