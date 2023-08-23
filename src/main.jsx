@@ -2,10 +2,16 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
+//styles
 import './index.scss'
+
+//fonts
+import '@fontsource/inter';
 
 //routes
 import Root from './routes/Root/Root'
+import Account from './routes/Account/Account';
+import Welcome from './routes/Welcome/Welcome'
 
 const router = createBrowserRouter([
   {
@@ -14,7 +20,8 @@ const router = createBrowserRouter([
     // errorElement: ,
     children: [
       {
-
+        path: "/",
+        element: <Account/>
       }
     ]
   }
