@@ -2,9 +2,10 @@
 //react
 import {Outlet} from 'react-router-dom'
 import {useState} from 'react'
-
+import { ReactDOM } from 'react';
 //components
 import Navbar from '../../page/Navbar/Navbar'
+import Effect from '../../page/Effect/Effect';
 
 function Root(){
     const [isLoggedIn, setIsLoggedIn] = useState(false);

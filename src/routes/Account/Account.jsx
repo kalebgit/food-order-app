@@ -16,6 +16,7 @@ import Link from '@mui/material/Link';
 //images
 import AccountFormImage from '../../assets/img/account/account-form.jpg'
 import { Button } from '@mui/material';
+import Modal from '../../components/Modals/Modal/Modal';
 
 function Account(){
     // define el tipo de formulario (inicar sesion o registrarse)
@@ -94,7 +95,7 @@ function Account(){
                     {inputs}
                 </Form>
             </Card>
-            
+            <Modal/>
         </main>
         
     )

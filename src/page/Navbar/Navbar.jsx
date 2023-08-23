@@ -55,7 +55,7 @@ function Navbar({isAuthenticated}){
             
             </section>  
             }
-            <nav className={`navbar absolute top-0 w-1/4 h-full bg-white p-2 z-50 divide-y ${showNavbar ? 'navbar__show': ''}`}>
+            <nav className={`navbar absolute top-0 w-1/4 h-full bg-white p-2 z-30 divide-y ${showNavbar ? 'navbar__show': ''}`}>
                 <section className="flex flex-row flex-nowrap justify-between items-center ">
                     <IconButton>
                         <LogoDevIcon/>
