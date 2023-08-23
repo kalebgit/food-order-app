@@ -19,13 +19,14 @@ import AccountFormImage from '../../assets/img/account/account-form.jpg'
 import { Button } from '@mui/material';
 import Modal from '../../components/Modals/Modal/Modal';
 import Effect from '../../page/Effect/Effect';
+import { PasswordRounded } from '@mui/icons-material';
 
 function Account(){
     // define el tipo de formulario (inicar sesion o registrarse)
     const [typeForm, setTypeForm] = useState({register: true, login: false});
 
     // estado que indica si la contrsenia es correcta 
-    const [equals, setEquals] = useState(false);
+    const [equals, setEquals] = useState(true);
 
     //valores del formulario
     const username = useRef();
@@ -44,8 +45,22 @@ function Account(){
     }
 
 
+    const onRegister = (event)=>{
+        event.preventDefault();
+        if(password.current.value != confirmationPassword.current.value){
+            setEquals(false);
+        }else{
+            setEquals(true)
+        }
+    }
+
+    const onLogin = (event)=>{
+        event.preventDefault();
+    }
+
+
     // los inputs son dinamicos, dependiendo de que tipo de registro sea
-    const inputs  = typeForm.register ? [
+    const inputs = [
         <TextField id="username" key="username" label="Nombre de usuario" variant= "outlined"
             type="text" required={true} placeholder='Escriba aqui...' error={false}
             helperText="" size="small" fullWidth
@@ -53,46 +68,41 @@ function Account(){
 
             <TextField id="password" key="password" label="Contraseña" variant="outlined" type="password" 
             required={true}
-            placeholder='Escriba aqui...' error={false} helperText="" 
+            placeholder='Escriba aqui...' error={typeForm.register ? !equals : false} 
             size="small" fullWidth={true}
             inputRef={password}/>,
 
-            <TextField id="password" key="password" label="Repite la Contraseña" variant="outlined" type="password" 
-            required={true}
-            placeholder='Escriba aqui...' error={false} helperText="" 
-            size="small" fullWidth={true}
-            inputRef={confirmationPassword}/>,
 
+
+            typeForm.register ? 
+                <TextField id="password" key="password" label="Repite la Contraseña" variant="outlined" type="password" 
+                required={true}
+                placeholder='Escriba aqui...' error={!equals} 
+                helperText={`${typeForm.register ? (!equals ? 'No coinciden las contraseñas' : '') : ''}`}
+                size="small" fullWidth={true}
+                
+                inputRef={confirmationPassword}/>
+            
+            : <></>,
+
+            typeForm.register ? 
             <p>Ya tienes cuenta? <Link underline="hover" 
-            onClick={onClickType}>Inicia Sesion</Link></p>,
-
-            <Button variant='contained' onClick={()=>{}}>
-                Registrate
-            </Button>
-    ] : [
-        <TextField id="username" key="username" label="Nombre de usuario" variant="outlined" type="text" 
-            required={true} placeholder='Escriba aqui...' error={false} 
-            helperText="" size="small" fullWidth 
-            inputRef={username}/>,
-
-        <TextField id="password" key="password" label="Contraseña" variant="outlined" type="password" 
-            required={true}
-            placeholder='Escriba aqui...' error={false} helperText="" 
-            size="small" fullWidth={true}
-            inputRef={password}/>,
-
-        <p>No tienes cuenta? <Link underline="hover" 
+            onClick={onClickType}>Inicia Sesion</Link></p> : 
+            <p>No tienes cuenta? <Link underline="hover" 
             onClick={onClickType}>Registrate</Link></p>,
 
-            <Button variant='contained' onClick={()=>{}}>
-                Iniciar Sesion
+            <Button variant='contained' type="submit">
+                {typeForm.register ? "Registrar" : "Iniciar Sesion"}
             </Button>
-    ];
+            
+    ]
 
     return (
         <main className="account__main min-h-screen p-6 flex flex-col justify-center ">
             <Card hasImage={true} image={AccountFormImage}>
                 <Form title={`${typeForm.login ? 'Iniciar Sesion' : 'Crear Cuenta'}`} 
+                    onSubmit={typeForm.register ? 
+                        onRegister : onLogin}
                     className="bg-white">
                     {inputs}
                 </Form>
