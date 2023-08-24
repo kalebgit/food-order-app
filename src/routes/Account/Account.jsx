@@ -24,20 +24,68 @@ function Account(){
     //contexto de router dom
     const [data, setData] = useOutletContext();
 
-    // define el tipo de formulario (inicar sesion o registrarse)
-    const [typeForm, setTypeForm] = useState({register: true, login: false});
-    // estado que indica si el formulario es correcto
-    const [validForm, setValidForm] = useState(false);
+    // // define el tipo de formulario (inicar sesion o registrarse)
+    // const [typeForm, setTypeForm] = useState({register: true, login: false});
+    // // estado que indica si el formulario es correcto
+    // const [validForm, setValidForm] = useState(false);
     
 
-    //valores del formulario
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmationPassword, setConfirmationPassword] = useState('');
+    // //valores del formulario
+    // const [username, setUsername] = useState('');
+    // const [password, setPassword] = useState('');
+    // const [confirmationPassword, setConfirmationPassword] = useState('');
     
-    const usernameRef = useRef(null);
-    const passwordRef = useRef(null);
-    const passwordConfirmationRef = useRef(null);
+    // const usernameRef = useRef(null);
+    // const passwordRef = useRef(null);
+    // const passwordConfirmationRef = useRef(null);
+
+    //reducers
+    const [formState, dispatchForm] = useReducer((state, action)=>{
+        switch(action.type){
+            case 'RESET_INPUTS': 
+                return {
+                    ...state, 
+                    username: {value: '', valid: false},
+                    password: {value: '', valid: false},
+                    duplicatePassword: {value: '', valid: false}
+                }
+            case 'INPUT_VALIDFORM':
+                return {
+                    ...state,
+                    validForm: action.value
+                }
+            case 'INPUT_TYPEFORM': 
+                return {
+                    ...state,
+                    typeForm: {register: !state.register, login: !state.login}
+                }
+            case 'INPUT_USERNAME':
+                return {
+                    ...state,
+                    username: {value: action.value, valid: action.value.length > 6}
+                }
+            case 'INPUT_PASSWORD': 
+                return {
+                    ...state,
+                    password: {value: action.value, valid: (action.value.length > 8 && 
+                        !(action.value.includes(' ')) && (action.value.charCodeAt(0) > 64 && 
+                        action.value.charCodeAt(0) < 91 ))}
+                }
+            case 'INPUT_DUPLICATEPASSWORD': 
+                return {
+                    ...state,
+                    duplicatePassword: {value: action.value, valid: action.value == state.password.value}
+                }
+            default: 
+                return {...state}
+        }
+    }, {
+        typeForm: {register: true, login: false}, 
+        validForm: false,
+        username: {value: '', valid: false},
+        password: {value: '', valid: false},
+        duplicatePassword: {value: '', valid: false}
+    });
 
     
     
@@ -54,34 +102,26 @@ function Account(){
 
 
     useEffect(()=>{
-        console.log(usernameRef);
-        console.log(passwordRef);
-        console.log(passwordConfirmationRef);
-        if(usernameRef != null && passwordRef != null && passwordConfirmationRef != null){
-            usernameRef.current.value = ''
-            passwordRef.current.value = ''
-            typeForm.register ? passwordConfirmationRef.current.value = '' : '';
-            
-        }
-    }, [typeForm])
+        dispatchForm({type: 'RESET_INPUTS'})
+    }, [formState.typeForm])
     
 
     //verificacion del forms
     useEffect(()=>{
         let timeout;
-        if(!invalidUsername() && !invalidPassword() && !invalidEquals()){
+        if(formState.username.valid && formState.password.valid && formState.duplicatePassword.valid){
             console.log("checking validity!");
             timeout = setTimeout(
                 ()=>{
                     
                     console.log('is valid!!')
-                    setValidForm(true);        
+                    dispatchForm({type: 'INPUT_VALIDFORM', value: true})     
                 }, 1000
             )
             
         }else{
             console.log('invalid')
-            setValidForm(false);
+            dispatchForm({type: 'INPUT_VALIDFORM', value: false});
         }
         
         
@@ -90,53 +130,12 @@ function Account(){
             clearTimeout(timeout);
         }
         
-    }, [username, password, confirmationPassword])
-
-
-    //verificacion
-    const invalidUsername = ()=>{
-        if(username.length > 6){
-            return false;
-        }else{
-            return true;
-        }
-    }
-
-    const invalidPassword = ()=>{
-        if(password.length > 8 && !(password.includes(' ')) && (password.charCodeAt(0) > 64 && 
-            password.charCodeAt(0) < 91 ) && (()=>{
-                let characters = ['#', '!', '$', '%', '&', '?']
-                for(char of characters){
-                    if(password.includes(char)){
-                        return true;
-                    }
-                }
-                return false;
-            })){
-                return false;
-        }else{
-            return true;
-        }
-    }
-
-    const invalidEquals = ()=>{
-        if(password == confirmationPassword){
-            return false;
-        }else{
-            return true;
-        }
-    }
-
-    
-
-    
+    }, [formState.username.value, formState.password.value, formState.duplicatePassword.value])
 
     //metodo que cambia el estado para que se muestre el nav
     const onClickType = (event)=>{
         event.preventDefault();
-        setTypeForm((prevState)=>{
-                return {register: !prevState.register, login: !prevState.login}
-        })
+        dispatchForm({type: 'INPUT_TYPEFORM'})
     }
 
     //handler para registrar una cuenta
@@ -163,37 +162,46 @@ function Account(){
     // los inputs son dinamicos, dependiendo de que tipo de registro sea
     const inputs = [
         <TextField id="username" key="username" label="Nombre de usuario" variant= "outlined"
-            type="text" required={true} placeholder='Escriba aqui...' error={invalidUsername()}
-            helperText={`${invalidUsername() ? 'Minimo 6 caracteres': ''}`} size="small" fullWidth 
-            onChange={({target: {value}})=>{setUsername(value)}}
-            inputRef={usernameRef}/>, 
+            type="text" required={true} placeholder='Escriba aqui...' 
+            error={!formState.username.valid}
+            helperText={`${!formState.username.valid ? 'Minimo 6 caracteres': ''}`} 
+            size="small" fullWidth 
+            onChange={({target: {value}})=>{dispatchForm({type: 'TYPE_USERNAME', value: value})}}
+            value={formState.username.value}/>, 
 
-            <TextField id="password" key="password" label="Contraseña" variant="outlined" type="password" 
+            <TextField id="password" key="password" label="Contraseña" variant="outlined" 
+            type="password" 
             required={true}
-            placeholder='Escriba aqui...' error={invalidPassword()} 
-            helperText={`${invalidPassword() ? `Debe empezar con mayus y contener ${['#', '!', '$', '%', '&', '?'].join(' o ')}` : ''}`}
+            placeholder='Escriba aqui...' error={!formState.password.valid} 
+            helperText={`${!formState.password.valid ? 
+                `Debe empezar con mayus ` : ''}`}
             size="small" fullWidth={true}
-            onChange={({target: {value}})=>{setPassword(value)}}
-            inputRef={passwordRef}/>,
+            onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_PASSWORD', value: value})}}
+            value={formState.password.value}/>,
 
 
 
-            typeForm.register ? 
+            formState.typeForm.register ? 
             [
                 <TextField id="confirmationpassword" key="confirmationpassword" label="Repite la Contraseña" variant="outlined" type="password" 
                     required={true}
-                    placeholder='Escriba aqui...' error={invalidEquals()} 
-                    helperText={`${invalidEquals() ? 'no coinciden las contraseñas' : ''}`}
+                    placeholder='Escriba aqui...' error={!formState.duplicatePassword.value} 
+                    helperText={`${!formState.duplicatePassword.value ? 'no coinciden las contraseñas' : ''}`}
                     size="small" fullWidth={true}
-                    onChange={({target: {value}})=>{setConfirmationPassword(value)}}
-                    inputRef={passwordConfirmationRef}/>,
+                    onChange={({target: {value}})=>{
+                        dispatchForm(
+                            {
+                                type: 'INPUT_DUPLICATEPASSWORD', 
+                                value: value
+                            })
+                        }}
+                    value={formState.duplicatePassword.value}/>,
 
                 <p  key="LoginMessage">
                     Ya tienes cuenta? 
                     <Link underline="hover" onClick={onClickType}> Inicia Sesion</Link>
                 </p> 
             ]
-                
             
             : 
             <p key="RegisterMessage">
@@ -203,8 +211,8 @@ function Account(){
 
 
             <Button variant='contained' type="submit" key="submit"
-                disabled={!validForm}>
-                {typeForm.register ? "Registrar" : "Iniciar Sesion"}
+                disabled={!formState.validForm}>
+                {formState.typeForm.register ? "Registrar" : "Iniciar Sesion"}
             </Button>
             
     ]
@@ -218,8 +226,8 @@ function Account(){
                 😀</Typography>
             :
             <Card hasImage image={AccountFormImage}>
-                <Form title={`${typeForm.login ? 'Iniciar Sesion' : 'Crear Cuenta'}`} 
-                    onSubmit={typeForm.register ? 
+                <Form title={`${formState.typeForm.login ? 'Iniciar Sesion' : 'Crear Cuenta'}`} 
+                    onSubmit={formState.typeForm.register ? 
                         onRegister : onLogin}
                     className="bg-white">
                     {inputs}
