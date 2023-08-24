@@ -93,26 +93,28 @@ function Account(){
 
 
             typeForm.register ? 
+            [
                 <TextField id="confirmationpassword" key="confirmationpassword" label="Repite la Contraseña" variant="outlined" type="password" 
-                required={true}
-                placeholder='Escriba aqui...' error={!equals} 
-                helperText={`${typeForm.register ? (!equals ? 'No coinciden las contraseñas' : '') : ''}`}
-                size="small" fullWidth={true}
-                
-                inputRef={confirmationPassword}/>
-            
-            : <></>,
+                    required={true}
+                    placeholder='Escriba aqui...' error={!equals} 
+                    helperText={`${typeForm.register ? (!equals ? 'No coinciden las contraseñas' : '') : ''}`}
+                    size="small" fullWidth={true}
+                    
+                    inputRef={confirmationPassword}/>,
 
-            typeForm.register ? 
-            <p  key="LoginMessage">
-                Ya tienes cuenta? 
-                <Link underline="hover" onClick={onClickType}> Inicia Sesion</Link>
-            </p> 
+                <p  key="LoginMessage">
+                    Ya tienes cuenta? 
+                    <Link underline="hover" onClick={onClickType}> Inicia Sesion</Link>
+                </p> 
+            ]
+                
+            
             : 
             <p key="RegisterMessage">
                 No tienes cuenta? 
                 <Link underline="hover" onClick={onClickType} > Registrate</Link>
-            </p>,
+            </p>,,
+
 
             <Button variant='contained' type="submit" key="submit">
                 {typeForm.register ? "Registrar" : "Iniciar Sesion"}
