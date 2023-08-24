@@ -54,17 +54,24 @@ function Account(){
 
     //verificacion del forms
     useEffect(()=>{
-        let timeout = setTimeout(
-            ()=>{
-                console.log("checking validity!");
-                if(!invalidUsername() && !invalidPassword() && !invalidEquals()){
+        let timeout;
+        if(!invalidUsername() && !invalidPassword() && !invalidEquals()){
+            console.log("checking validity!");
+            timeout = setTimeout(
+                ()=>{
+                    
                     console.log('is valid!!')
-                    setValidForm(true);
-                }
-            }, 1000
-        )
+                    setValidForm(true);        
+                }, 1000
+            )
+            
+        }else{
+            setValidForm(false);
+        }
+        
         
         return ()=>{
+            console.log('CLEANUP')
             clearTimeout(timeout);
         }
         
