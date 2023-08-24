@@ -40,10 +40,13 @@ function Account(){
                     validForm: action.value
                 }
             case 'INPUT_TYPEFORM': 
-                return {
+                let object  = {
                     ...state,
-                    typeForm: {register: !state.register, login: !state.login}
+                    typeForm: {register: !(state.typeForm.register), login: !(state.typeForm.login)}
                 }
+
+                console.log(object)
+                return object
             case 'INPUT_USERNAME':
                 return {
                     ...state,
@@ -59,7 +62,7 @@ function Account(){
             case 'INPUT_DUPLICATEPASSWORD': 
                 return {
                     ...state,
-                    duplicatePassword: {value: action.value, valid: action.value == state.password.value}
+                    duplicatePassword: {value: action.value, valid: (action.value === state.password.value)}
                 }
             default: 
                 return {...state}
@@ -159,7 +162,8 @@ function Account(){
             required={true}
             placeholder='Escriba aqui...' error={!formState.password.valid} 
             helperText={`${!formState.password.valid ? 
-                `Debe empezar con mayus ` : ''}`}
+                formState.typeForm.register ? 
+                `Debe empezar con mayus y minimo 8 caracteres de longitud` : '' : ''}`}
             size="small" fullWidth={true}
             onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_PASSWORD', value: value})}}
             value={formState.password.value}/>,
@@ -168,10 +172,11 @@ function Account(){
 
             formState.typeForm.register ? 
             [
-                <TextField id="confirmationpassword" key="confirmationpassword" label="Repite la Contraseña" variant="outlined" type="password" 
+                <TextField id="confirmationpassword" key="confirmationpassword" 
+                    label="Repite la Contraseña" variant="outlined" type="password" 
                     required={true}
-                    placeholder='Escriba aqui...' error={!formState.duplicatePassword.value} 
-                    helperText={`${!formState.duplicatePassword.value ? 'no coinciden las contraseñas' : ''}`}
+                    placeholder='Escriba aqui...' error={!formState.duplicatePassword.valid} 
+                    helperText={`${!formState.duplicatePassword.valid ? 'no coinciden las contraseñas' : ''}`}
                     size="small" fullWidth={true}
                     onChange={({target: {value}})=>{
                         dispatchForm(
