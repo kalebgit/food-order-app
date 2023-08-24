@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect} from 'react'
+import {useState, useRef, useEffect, useReducer} from 'react'
 
 import { useOutletContext } from 'react-router-dom';
 //sytles
@@ -60,7 +60,8 @@ function Account(){
         if(usernameRef != null && passwordRef != null && passwordConfirmationRef != null){
             usernameRef.current.value = ''
             passwordRef.current.value = ''
-            passwordConfirmationRef.current.value = ''
+            typeForm.register ? passwordConfirmationRef.current.value = '' : '';
+            
         }
     }, [typeForm])
     
