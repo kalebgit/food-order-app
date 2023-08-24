@@ -24,22 +24,7 @@ function Account(){
     //contexto de router dom
     const [data, setData] = useOutletContext();
 
-    // // define el tipo de formulario (inicar sesion o registrarse)
-    // const [typeForm, setTypeForm] = useState({register: true, login: false});
-    // // estado que indica si el formulario es correcto
-    // const [validForm, setValidForm] = useState(false);
-    
-
-    // //valores del formulario
-    // const [username, setUsername] = useState('');
-    // const [password, setPassword] = useState('');
-    // const [confirmationPassword, setConfirmationPassword] = useState('');
-    
-    // const usernameRef = useRef(null);
-    // const passwordRef = useRef(null);
-    // const passwordConfirmationRef = useRef(null);
-
-    //reducers
+    // reducer que define todos los tipos de validaciones y valores para el formulario
     const [formState, dispatchForm] = useReducer((state, action)=>{
         switch(action.type){
             case 'RESET_INPUTS': 
