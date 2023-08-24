@@ -166,7 +166,7 @@ function Account(){
             error={!formState.username.valid}
             helperText={`${!formState.username.valid ? 'Minimo 6 caracteres': ''}`} 
             size="small" fullWidth 
-            onChange={({target: {value}})=>{dispatchForm({type: 'TYPE_USERNAME', value: value})}}
+            onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_USERNAME', value: value})}}
             value={formState.username.value}/>, 
 
             <TextField id="password" key="password" label="Contraseña" variant="outlined" 
