@@ -16,10 +16,9 @@ import Link from '@mui/material/Link';
 
 //images
 import AccountFormImage from '../../assets/img/account/account-form.jpg'
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import Modal from '../../components/Modals/Modal/Modal';
 import Effect from '../../page/Effect/Effect';
-import { PasswordRounded } from '@mui/icons-material';
 
 function Account(){
     //contexto de router dom
@@ -36,10 +35,11 @@ function Account(){
     const [password, setPassword] = useState('');
     const [confirmationPassword, setConfirmationPassword] = useState('');
     
-    const usernameRef = useRef();
-    const passwordRef = useRef();
-    const passwordConfirmationRef = useRef();
+    const usernameRef = useRef(null);
+    const passwordRef = useRef(null);
+    const passwordConfirmationRef = useRef(null);
 
+    
     
 
     //recuperar informacion del storage para actualizar el estado de autenticacion
@@ -51,6 +51,19 @@ function Account(){
             })
         }
     }, [])
+
+
+    useEffect(()=>{
+        console.log(usernameRef);
+        console.log(passwordRef);
+        console.log(passwordConfirmationRef);
+        if(usernameRef != null && passwordRef != null && passwordConfirmationRef != null){
+            usernameRef.current.value = ''
+            passwordRef.current.value = ''
+            passwordConfirmationRef.current.value = ''
+        }
+    }, [typeForm])
+    
 
     //verificacion del forms
     useEffect(()=>{
@@ -66,6 +79,7 @@ function Account(){
             )
             
         }else{
+            console.log('invalid')
             setValidForm(false);
         }
         
@@ -96,6 +110,7 @@ function Account(){
                         return true;
                     }
                 }
+                return false;
             })){
                 return false;
         }else{
@@ -127,7 +142,6 @@ function Account(){
     const onRegister = (event)=>{
         event.preventDefault();
         localStorage.setItem('isLogged', '1');
-        resetForm();
         setData((prevState)=>{
             return {isLoggedIn: true}
         })
@@ -138,18 +152,10 @@ function Account(){
     const onLogin = (event)=>{
         event.preventDefault();
         localStorage.setItem('isLogged', '1');
-        resetForm();
         setData((prevState)=>{
             return {isLoggedIn: true}
         })
         
-    }
-
-    //reset all values for form
-    const resetForm = ()=>{
-        usernameRef.current.value = ''
-        passwordRef.current.value = ''
-        passwordConfirmationRef.current.value = ''
     }
 
 
@@ -205,7 +211,12 @@ function Account(){
     //componente
     return (
         <main className="account__main min-h-screen p-6 flex flex-col justify-center ">
-            <Card hasImage={true} image={AccountFormImage}>
+            {data.isLoggedIn ? 
+
+                <Typography variant="h2" className="text-center">Bienvenido De Nuevo
+                😀</Typography>
+            :
+            <Card hasImage image={AccountFormImage}>
                 <Form title={`${typeForm.login ? 'Iniciar Sesion' : 'Crear Cuenta'}`} 
                     onSubmit={typeForm.register ? 
                         onRegister : onLogin}
@@ -213,6 +224,8 @@ function Account(){
                     {inputs}
                 </Form>
             </Card>
+            }
+            
         </main>
         
     )

@@ -1,9 +1,9 @@
 import './Card.scss'
 
-function Card({children, hasImage, image}){
+function Card({cardClassName, children, hasImage, image}){
     return (
-        <section className="card overflow-hidden rounded-lg w-full
-            md:grid md:grid-cols-2 ">
+        <section className={`card overflow-hidden rounded-lg w-full
+            md:grid md:grid-cols-2 ${cardClassName}`}>
             {children}
             {hasImage &&
 
