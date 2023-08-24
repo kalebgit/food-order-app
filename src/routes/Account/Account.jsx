@@ -27,13 +27,14 @@ function Account(){
 
     // define el tipo de formulario (inicar sesion o registrarse)
     const [typeForm, setTypeForm] = useState({register: true, login: false});
-    // estado que indica si la contrsenia es correcta 
-    const [equals, setEquals] = useState(true);
+    // estado que indica si el formulario es correcto
+    const [validForm, setValidForm] = useState(false);
+    
 
     //valores del formulario
-    const username = useRef();
-    const password = useRef();
-    const confirmationPassword = useRef();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmationPassword, setConfirmationPassword] = useState('');
 
 
     //recuperar informacion del storage para actualizar el estado de autenticacion
@@ -46,9 +47,44 @@ function Account(){
         }
     }, [])
 
+
+    //verificacion
+    const checkUsername = ()=>{
+        if(username.length > 6){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    const checkPassword = ()=>{
+        if(password.length > 12 && !(password.includes(' ')) && (password.charCodeAt(0) > 64 && 
+            password.charCodeAt(0) < 91 ) && (password.includes(['#', '!', '$', '%', '&', '?']))){
+                return true;
+        }else{
+            return false
+        }
+    }
+
+    const checkEquals = ()=>{
+        if(password == confirmationPassword){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    //verificacion del forms
+    useEffect(()=>{
+        if(checkUsername && checkPassword && checkEquals){
+            setValidForm(true);
+        }
+    }, [username, password, confirmationPassword])
+
+    
+
     //metodo que cambia el estado para que se muestre el nav
     const onClickType = (event)=>{
-        console.log(event);
         event.preventDefault();
         setTypeForm((prevState)=>{
                 return {register: !prevState.register, login: !prevState.login}
@@ -58,11 +94,10 @@ function Account(){
     //handler para registrar una cuenta
     const onRegister = (event)=>{
         event.preventDefault();
-        if(password.current.value != confirmationPassword.current.value){
-            setEquals(false);
-        }else{
-            setEquals(true)
-        }
+        localStorage.setItem('isLogged', '1');
+        setData((prevState)=>{
+            return {isLoggedIn: true}
+        })
     }
 
 
@@ -81,14 +116,14 @@ function Account(){
     const inputs = [
         <TextField id="username" key="username" label="Nombre de usuario" variant= "outlined"
             type="text" required={true} placeholder='Escriba aqui...' error={false}
-            helperText="" size="small" fullWidth
-            inputRef={username}/>, 
+            helperText={`${checkUsername ? '': 'Minimo 6 caracteres'}`} size="small" fullWidth 
+            onChange={({target: {value}})=>{setUsername(value)}}/>, 
 
             <TextField id="password" key="password" label="Contraseña" variant="outlined" type="password" 
             required={true}
-            placeholder='Escriba aqui...' error={typeForm.register ? !equals : false} 
+            placeholder='Escriba aqui...' error={false} 
             size="small" fullWidth={true}
-            inputRef={password}/>,
+            onChange={({target: {value}})=>{setPassword(value)}}/>,
 
 
 
@@ -96,11 +131,10 @@ function Account(){
             [
                 <TextField id="confirmationpassword" key="confirmationpassword" label="Repite la Contraseña" variant="outlined" type="password" 
                     required={true}
-                    placeholder='Escriba aqui...' error={!equals} 
-                    helperText={`${typeForm.register ? (!equals ? 'No coinciden las contraseñas' : '') : ''}`}
+                    placeholder='Escriba aqui...' error={false} 
+                    helperText={`${''}`}
                     size="small" fullWidth={true}
-                    
-                    inputRef={confirmationPassword}/>,
+                    onChange={({target: {value}})=>{setConfirmationPassword(value)}}/>,
 
                 <p  key="LoginMessage">
                     Ya tienes cuenta? 
@@ -116,7 +150,8 @@ function Account(){
             </p>,,
 
 
-            <Button variant='contained' type="submit" key="submit">
+            <Button variant='contained' type="submit" key="submit"
+                disabled={!validForm}>
                 {typeForm.register ? "Registrar" : "Iniciar Sesion"}
             </Button>
             
