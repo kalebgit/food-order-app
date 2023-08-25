@@ -9,7 +9,7 @@ import { Button } from '@mui/material';
 import LogoDevIcon from '@mui/icons-material/LogoDev';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
-import NoAccountsIcon from '@mui/icons-material/NoAccounts';
+import LogoutIcon from '@mui/icons-material/Logout';
 //react
 import {useState} from 'react'
 import {Link} from 'react-router-dom'
@@ -21,6 +21,7 @@ import ReactDOM from 'react-dom'
 import NavLinksContainer from '../NavLinksContainer/NavLinksContainer';
 import './Navbar.scss'
 import Effect from '../Effect/Effect';
+import { LogoutOutlined } from '@mui/icons-material';
 
 
 
@@ -71,7 +72,7 @@ function Navbar({isAuthenticated, onLogout}){
                     <div className={`sub-menu absolute rounded-b-md right-0 bg-white ${showAccountMenu ? 
                     'sub-menu__show' : ''}`}>
                         <NavLinksContainer>
-                            <Button endIcon={<NoAccountsIcon/>} 
+                            <Button endIcon={<LogoutIcon/>} 
                                 onClick={onLogout}>Cerrar Sesion</Button>
                         </NavLinksContainer>
                     </div>

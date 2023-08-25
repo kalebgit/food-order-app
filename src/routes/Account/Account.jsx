@@ -14,6 +14,7 @@ import Link from '@mui/material/Link';
 import GoogleIcon from '@mui/icons-material/Google';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import AppleIcon from '@mui/icons-material/Apple';
+import LoginIcon from '@mui/icons-material/Login';
 // import { IconButton, InputAdornment } from '@mui/material';
 // import { Visibility, VisibilityOff } from '@mui/icons-material';
 
@@ -41,10 +42,10 @@ function Account(){
             case 'RESET_INPUTS': 
                 return {
                     ...state, 
-                    username: {value: '', valid: false},
+                    email: {value: '', valid: false},
                     password: {value: '', valid: false},
                     duplicatePassword: {value: '', valid: false},
-                    enable: {username: false, password: false, duplicate: false}
+                    enable: {email: false, password: false, duplicate: false}
                 }
             case 'INPUT_VALIDFORM':
                 return {
@@ -59,10 +60,10 @@ function Account(){
 
                 console.log(object)
                 return object
-            case 'INPUT_USERNAME':
+            case 'INPUT_EMAIL':
                 return {
                     ...state,
-                    username: {value: action.value, valid: action.value.length > 6}
+                    email: {value: action.value, valid: action.value.includes('@')}
                 }
             case 'INPUT_PASSWORD': 
                 return {
@@ -78,10 +79,10 @@ function Account(){
                 }
             case 'ONBLUR':
                 switch(action.subtype){
-                    case 'USERNAME': 
+                    case 'EMAIL': 
                         return {
                             ...state, 
-                            enable: {...state.enable, username: true}
+                            enable: {...state.enable, email: true}
                         }
                     case 'PASSWORD': 
                         return {
@@ -104,10 +105,10 @@ function Account(){
     }, {
         typeForm: {register: true, login: false}, 
         validForm: false,
-        username: {value: '', valid: false},
+        email: {value: '', valid: false},
         password: {value: '', valid: false},
         duplicatePassword: {value: '', valid: false},
-        enable: {username: false, password: false, duplicate: false}
+        enable: {email: false, password: false, duplicate: false}
     });
 
     
@@ -132,8 +133,8 @@ function Account(){
     //verificacion del forms
     useEffect(()=>{
         let timeout;
-        if(formState.username.valid && formState.password.valid 
-            && formState.duplicatePassword.valid){
+        if(formState.email.valid && formState.password.valid 
+            && (formState.typeForm.register ? formState.duplicatePassword.valid : true)){
             console.log("checking validity!");
             timeout = setTimeout(
                 ()=>{
@@ -154,7 +155,14 @@ function Account(){
             clearTimeout(timeout);
         }
         
-    }, [formState.username.value, formState.password.value, formState.duplicatePassword.value])
+    }, [formState.email.value, formState.password.value, formState.duplicatePassword.value])
+
+
+    //sign in
+    const signInEmail = async()=>{
+        await createUserWithEmailAndPassword(auth, formState.email.value, formState.password.value)
+    }
+
 
     //metodo que cambia el estado para que se muestre el nav
     const onClickType = (event)=>{
@@ -185,15 +193,15 @@ function Account(){
 
     // los inputs son dinamicos, dependiendo de que tipo de registro sea
     const inputs = [
-        <TextField id="username" key="username" label="Nombre de usuario" variant= "outlined"
-            type="text" required={true} placeholder='Escriba aqui...' 
-            error={(!formState.username.valid && formState.enable.username)}
-            onBlur={()=>{dispatchForm({type: 'ONBLUR', subtype: 'USERNAME'})}}
-            helperText={`${(!formState.username.valid && formState.enable.username) 
-                ? 'Minimo 6 caracteres': ''}`} 
+        <TextField id="email" key="email" label="Correo" variant= "outlined"
+            type="email" required={true} placeholder='Escriba aqui...' 
+            error={(!formState.email.valid && formState.enable.email)}
+            onBlur={()=>{dispatchForm({type: 'ONBLUR', subtype: 'EMAIL'})}}
+            helperText={`${(!formState.email.valid && formState.enable.email) 
+                ? 'Debe ser un correo': ''}`} 
             size="small" fullWidth 
-            onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_USERNAME', value: value})}}
-            value={formState.username.value}/>, 
+            onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_EMAIL', value: value})}}
+            value={formState.email.value}/>, 
 
             <TextField id="password" key="password" label="Contraseña" variant="outlined" 
             type="password" 
@@ -245,12 +253,12 @@ function Account(){
 
 
             <Button variant='contained' type="submit" key="submit"
-                disabled={!formState.validForm}>
+                disabled={!formState.validForm} startIcon={<LoginIcon/>}>
                 {formState.typeForm.register ? "Registrar" : "Iniciar Sesion"}
             </Button>, 
 
-            <p className="text-sm text-center w-full"><em>O continuar con</em> </p>,
-            <section className='p-1'>
+            <p className="text-sm text-center w-full" key="loginMessage"><em>O continuar con</em> </p>,
+            <section className='p-1' key="loginOptions">
                 <IconButton>
                     <GoogleIcon fontSize='large'/>
                 </IconButton>
