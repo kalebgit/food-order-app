@@ -92,7 +92,7 @@ function Navbar({isAuthenticated, onLogout}){
                     </IconButton>
                 </section>
                 <NavLinksContainer>
-                    <Link to="" className="w-full">
+                    <Link to="/home" className="w-full">
                         <Button variant="text" startIcon={<HomeIcon/>}
                         className='w-full' >Home</Button>
                     </Link>

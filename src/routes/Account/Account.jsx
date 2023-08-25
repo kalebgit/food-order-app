@@ -8,6 +8,10 @@ import './Account.scss'
 import Form from '../../components/Forms/Form/Form';
 import Card from '../../components/Cards/Card/Card'
 
+
+//react router
+import { useNavigate } from 'react-router-dom';
+
 //mui 
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
@@ -26,13 +30,15 @@ import Effect from '../../page/Effect/Effect';
 import { FactorId } from '@firebase/auth';
 
 //firebase
-import {auth} from '../../config/firebase'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import {auth, googleProvider} from '../../config/firebase'
+import { createUserWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth'
 
 
 
 
 function Account(){
+    
+
     //contexto de router dom
     const [data, setData] = useOutletContext();
 
@@ -158,11 +164,19 @@ function Account(){
     }, [formState.email.value, formState.password.value, formState.duplicatePassword.value])
 
 
-    //sign in
+    //sign in with email
     const signInEmail = async()=>{
         await createUserWithEmailAndPassword(auth, formState.email.value, formState.password.value)
     }
 
+    //sign in with google
+    const signInGoogle = async()=>{
+        await signInWithPopup(auth, googleProvider);
+    }
+
+    const logout = async()=>{
+        await signOut(auth);
+    }
 
     //metodo que cambia el estado para que se muestre el nav
     const onClickType = (event)=>{
@@ -275,11 +289,7 @@ function Account(){
     //componente
     return (
         <main className="account__main min-h-screen p-6 flex flex-col justify-center ">
-            {data.isLoggedIn ? 
-
-                <Typography variant="h2" className="text-center">Bienvenido De Nuevo
-                😀</Typography>
-            :
+            
             <Card hasImage image={AccountFormImage}>
                 <Form title={`${formState.typeForm.login ? 'Iniciar Sesion' : 'Crear Cuenta'}`} 
                     onSubmit={formState.typeForm.register ? 
@@ -288,7 +298,7 @@ function Account(){
                     {inputs}
                 </Form>
             </Card>
-            }
+            
             
         </main>
         
