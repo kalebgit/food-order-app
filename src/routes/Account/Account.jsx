@@ -11,14 +11,25 @@ import Card from '../../components/Cards/Card/Card'
 //mui 
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
+import GoogleIcon from '@mui/icons-material/Google';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import AppleIcon from '@mui/icons-material/Apple';
 // import { IconButton, InputAdornment } from '@mui/material';
 // import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 //images
 import AccountFormImage from '../../assets/img/account/account-form.jpg'
-import { Button, Typography } from '@mui/material';
+import { Button, Icon, IconButton, Typography } from '@mui/material';
 import Modal from '../../components/Modals/Modal/Modal';
 import Effect from '../../page/Effect/Effect';
+import { FactorId } from '@firebase/auth';
+
+//firebase
+import {auth} from '../../config/firebase'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+
+
+
 
 function Account(){
     //contexto de router dom
@@ -230,13 +241,26 @@ function Account(){
             <p key="RegisterMessage">
                 No tienes cuenta? 
                 <Link underline="hover" onClick={onClickType} > Registrate</Link>
-            </p>,,
+            </p>,
 
 
             <Button variant='contained' type="submit" key="submit"
                 disabled={!formState.validForm}>
                 {formState.typeForm.register ? "Registrar" : "Iniciar Sesion"}
-            </Button>
+            </Button>, 
+
+            <p className="text-sm text-center w-full"><em>O continuar con</em> </p>,
+            <section className='p-1'>
+                <IconButton>
+                    <GoogleIcon fontSize='large'/>
+                </IconButton>
+                <IconButton>
+                    <FacebookIcon fontSize="large"/>
+                </IconButton>
+                <IconButton>
+                    <AppleIcon fontSize="large"/>
+                </IconButton>
+            </section>
             
     ]
 
