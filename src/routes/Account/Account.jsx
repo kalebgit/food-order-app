@@ -32,7 +32,8 @@ function Account(){
                     ...state, 
                     username: {value: '', valid: false},
                     password: {value: '', valid: false},
-                    duplicatePassword: {value: '', valid: false}
+                    duplicatePassword: {value: '', valid: false},
+                    enable: {username: false, password: false, duplicate: false}
                 }
             case 'INPUT_VALIDFORM':
                 return {
@@ -64,6 +65,28 @@ function Account(){
                     ...state,
                     duplicatePassword: {value: action.value, valid: (action.value === state.password.value)}
                 }
+            case 'ONBLUR':
+                switch(action.subtype){
+                    case 'USERNAME': 
+                        return {
+                            ...state, 
+                            enable: {...state.enable, username: true}
+                        }
+                    case 'PASSWORD': 
+                        return {
+                            ...state, 
+                            enable: {...state.enable, password: true}
+                        }
+                    case 'DUPLICATE': 
+                        return {
+                            ...state, 
+                            enable: {...state.enable, duplicate: true}
+                        }
+                    default: 
+                        return {
+                            ...state
+                        }
+                }
             default: 
                 return {...state}
         }
@@ -72,7 +95,8 @@ function Account(){
         validForm: false,
         username: {value: '', valid: false},
         password: {value: '', valid: false},
-        duplicatePassword: {value: '', valid: false}
+        duplicatePassword: {value: '', valid: false},
+        enable: {username: false, password: false, duplicate: false}
     });
 
     
@@ -97,7 +121,8 @@ function Account(){
     //verificacion del forms
     useEffect(()=>{
         let timeout;
-        if(formState.username.valid && formState.password.valid && formState.duplicatePassword.valid){
+        if(formState.username.valid && formState.password.valid 
+            && formState.duplicatePassword.valid){
             console.log("checking validity!");
             timeout = setTimeout(
                 ()=>{
@@ -151,8 +176,10 @@ function Account(){
     const inputs = [
         <TextField id="username" key="username" label="Nombre de usuario" variant= "outlined"
             type="text" required={true} placeholder='Escriba aqui...' 
-            error={!formState.username.valid}
-            helperText={`${!formState.username.valid ? 'Minimo 6 caracteres': ''}`} 
+            error={(!formState.username.valid && formState.enable.username)}
+            onBlur={()=>{dispatchForm({type: 'ONBLUR', subtype: 'USERNAME'})}}
+            helperText={`${(!formState.username.valid && formState.enable.username) 
+                ? 'Minimo 6 caracteres': ''}`} 
             size="small" fullWidth 
             onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_USERNAME', value: value})}}
             value={formState.username.value}/>, 
@@ -160,8 +187,11 @@ function Account(){
             <TextField id="password" key="password" label="Contraseña" variant="outlined" 
             type="password" 
             required={true}
-            placeholder='Escriba aqui...' error={!formState.password.valid} 
-            helperText={`${!formState.password.valid ? 
+            placeholder='Escriba aqui...' error={(!formState.password.valid  && 
+                formState.enable.password)} 
+            onBlur={()=>{dispatchForm({type: 'ONBLUR', subtype: 'PASSWORD'})}}
+            helperText={`${(!formState.password.valid  && 
+                formState.enable.password) ? 
                 formState.typeForm.register ? 
                 `Debe empezar con mayus y minimo 8 caracteres de longitud` : '' : ''}`}
             size="small" fullWidth={true}
@@ -175,8 +205,11 @@ function Account(){
                 <TextField id="confirmationpassword" key="confirmationpassword" 
                     label="Repite la Contraseña" variant="outlined" type="password" 
                     required={true}
-                    placeholder='Escriba aqui...' error={!formState.duplicatePassword.valid} 
-                    helperText={`${!formState.duplicatePassword.valid ? 'no coinciden las contraseñas' : ''}`}
+                    placeholder='Escriba aqui...' error={(!formState.duplicatePassword.valid && 
+                        formState.enable.duplicate)} 
+                    onBlur={()=>{dispatchForm({type: 'ONBLUR', subtype: 'DUPLICATE'})}}
+                    helperText={`${(!formState.duplicatePassword.valid && formState.enable.duplicate) 
+                        ? 'no coinciden las contraseñas' : ''}`}
                     size="small" fullWidth={true}
                     onChange={({target: {value}})=>{
                         dispatchForm(
