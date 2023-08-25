@@ -10,7 +10,7 @@ import Effect from '../../page/Effect/Effect';
 function Root(){
     //navegador
     const navigate = useNavigate();
-    const [data, setData] = useState({isLoggedIn: false});
+    const [data, setData] = useState({isLoggedIn: true});
 
     const onLogout = ()=>{
         setData( (prevState)=>{
