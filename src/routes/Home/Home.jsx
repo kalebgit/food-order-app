@@ -31,11 +31,13 @@ secondary: #CEDEBD
 function Home(){
     return (
         <main className="main-home min-h-screen pt-14">
-            <Typography variant='h1' className="text-center" gutterBottom>Food Mood</Typography>
+            <Typography variant='h2' component="h1" className="text-center main-home__title"  
+                gutterBottom>Food Mood</Typography>
             <CirclesContainer>
                 <Circle img={{src: Hotdog}} 
                 title="Hot Dog" price="$15.20"
-                primary="#FFEDBC" secondary=""/>
+                primary="#FFEDBC" secondary="#FFF4D6"
+                expand left/>
             </CirclesContainer>
         </main>
     )
