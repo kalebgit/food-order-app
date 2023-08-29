@@ -36,9 +36,21 @@ function Home(){
             <CirclesContainer>
                 <Circle img={{src: Hotdog}} 
                 title="Hot Dog" price="$15.20"
-                primary="#FFEDBC" secondary="#FFF4D6"
-                expand left/>
+                primary="#FFEDBC" secondary="#FFF4D6" left/>
+                <Circle img={{src: Hotdog}} 
+                title="Hot Dog" price="$15.20"
+                primary="#FFEDBC" secondary="#FFF4D6" left/>
+                <Circle img={{src: Hotdog}} 
+                title="Hot Dog" price="$15.20"
+                primary="#FFEDBC" secondary="#FFF4D6" left/>
+                <Circle img={{src: Hotdog}} 
+                title="Hot Dog" price="$15.20"
+                primary="#FFEDBC" secondary="#FFF4D6" left/>
+                <Circle img={{src: Hotdog}} 
+                title="Hot Dog" price="$15.20"
+                primary="#FFEDBC" secondary="#FFF4D6" left/>
             </CirclesContainer>
+            
         </main>
     )
 }
