@@ -10,9 +10,11 @@ import LogoDevIcon from '@mui/icons-material/LogoDev';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import LogoutIcon from '@mui/icons-material/Logout';
+
+import Navicon from '../NavIcon/Navicon';
 //react
 import {useState} from 'react'
-import {Link} from 'react-router-dom'
+
 import ReactDOM from 'react-dom'
 
 
@@ -42,6 +44,11 @@ function Navbar({isAuthenticated, onLogout}){
     //renderiza el sub menu
     const onClickSubMenuAccount = ()=>{
         setShowAccountMenu((prevState)=>!prevState);
+    }
+
+    //cuando clickea una pagina
+    const onClickToPage = ()=>{
+        setShowNavbar(false);
     }
 
     return (
@@ -92,20 +99,12 @@ function Navbar({isAuthenticated, onLogout}){
                     </IconButton>
                 </section>
                 <NavLinksContainer>
-                    <Link to="/home" className="w-full">
-                        <Button variant="text" startIcon={<HomeIcon/>}
-                        className='w-full' >Home</Button>
-                    </Link>
-                    
-                    <Link to="" className="w-full">
-                        <Button variant="text" startIcon={<WhatshotIcon/>}
-                        className='w-full' >Trend</Button>
-                    </Link>
 
-                    <Link to="" className="w-full">
-                        <Button variant="text" startIcon={<QueryStatsIcon/>}
-                        className='w-full' >Stats</Button>
-                    </Link>
+                    <Navicon title="home" onClick={onClickToPage} startIcon={<HomeIcon/>} 
+                        path="/home"/>
+                    <Navicon title="trend" onClick={onClickToPage} startIcon={<WhatshotIcon/>}/>
+                    <Navicon title="stats" onClick={onClickToPage} startIcon={<QueryStatsIcon/>}/>
+
                 </NavLinksContainer>
                 <section >
                     
