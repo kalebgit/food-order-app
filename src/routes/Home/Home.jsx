@@ -12,6 +12,8 @@ import Sushi from '../../assets/img/home/sushi.webp'
 import Donut from '../../assets/img/home/donought.png'
 import Cake from '../../assets/img/home/cake.webp'
 import PopCorn from '../../assets/img/home/popcorn.webp'
+import Item from '../../components/Item/Item';
+
 
 //colors
 /*
@@ -28,29 +30,17 @@ primary: #9EB384
 secondary: #CEDEBD
 */
 
+
+
 function Home(){
+
+    
+
     return (
         <main className="main-home min-h-screen pt-14">
             <Typography variant='h2' component="h1" className="text-center main-home__title"  
                 gutterBottom>Food Mood</Typography>
-            <CirclesContainer>
-                <Circle img={{src: Hotdog}} 
-                title="Hot Dog" price="$15.20"
-                primary="#FFEDBC" secondary="#FFF4D6" left/>
-                <Circle img={{src: Hotdog}} 
-                title="Hot Dog" price="$15.20"
-                primary="#FFEDBC" secondary="#FFF4D6" left/>
-                <Circle img={{src: Hotdog}} 
-                title="Hot Dog" price="$15.20"
-                primary="#FFEDBC" secondary="#FFF4D6" left/>
-                <Circle img={{src: Hotdog}} 
-                title="Hot Dog" price="$15.20"
-                primary="#FFEDBC" secondary="#FFF4D6" left/>
-                <Circle img={{src: Hotdog}} 
-                title="Hot Dog" price="$15.20"
-                primary="#FFEDBC" secondary="#FFF4D6" left/>
-            </CirclesContainer>
-            
+            {/* <Item /> */}
         </main>
     )
 }
