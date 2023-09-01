@@ -7,7 +7,7 @@ import './Item.scss'
 
 function Item({horizontal, vertical, product: {id, title, price, image}}){
     return (
-        <article className="card h-96 p-4 flex flex-col justify-between items-stretch"
+        <article className="item h-96 p-4 flex flex-col justify-between items-stretch"
             style={{backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${image})`}}>
                 <div>
                     <IconButton onClick>

@@ -186,7 +186,7 @@ function Account(){
 
     //handler para registrar una cuenta
     const onRegister = (event)=>{
-        event.preventDefault();
+        event.preventDefault()
         localStorage.setItem('isLogged', '1');
         setData((prevState)=>{
             return {isLoggedIn: true}
@@ -207,7 +207,7 @@ function Account(){
 
     // los inputs son dinamicos, dependiendo de que tipo de registro sea
     const inputs = [
-        <TextField id="email" key="email" label="Correo" variant= "outlined"
+        <TextField id="email" name="email" key="email" label="Correo" variant= "outlined"
             type="email" required={true} placeholder='Escriba aqui...' 
             error={(!formState.email.valid && formState.enable.email)}
             onBlur={()=>{dispatchForm({type: 'ONBLUR', subtype: 'EMAIL'})}}
@@ -217,7 +217,7 @@ function Account(){
             onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_EMAIL', value: value})}}
             value={formState.email.value}/>, 
 
-            <TextField id="password" key="password" label="Contraseña" variant="outlined" 
+            <TextField id="password" name='password' key="password" label="Contraseña" variant="outlined" 
             type="password" 
             required={true}
             placeholder='Escriba aqui...' error={(!formState.password.valid  && 
@@ -237,6 +237,7 @@ function Account(){
             [
                 <TextField id="confirmationpassword" key="confirmationpassword" 
                     label="Repite la Contraseña" variant="outlined" type="password" 
+                    name="confirmationpassword"
                     required={true}
                     placeholder='Escriba aqui...' error={(!formState.duplicatePassword.valid && 
                         formState.enable.duplicate)} 
