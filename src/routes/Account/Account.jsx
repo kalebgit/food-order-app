@@ -31,7 +31,8 @@ import { FactorId } from '@firebase/auth';
 
 //firebase
 import {auth, googleProvider} from '../../config/firebase'
-import { createUserWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth'
+import { createUserWithEmailAndPassword, signInWithPopup, signOut } from 
+'firebase/auth'
 
 
 
@@ -61,7 +62,8 @@ function Account(){
             case 'INPUT_TYPEFORM': 
                 let object  = {
                     ...state,
-                    typeForm: {register: !(state.typeForm.register), login: !(state.typeForm.login)}
+                    typeForm: {register: !(state.typeForm.register), login: 
+                        !(state.typeForm.login)}
                 }
 
                 console.log(object)
@@ -75,13 +77,15 @@ function Account(){
                 return {
                     ...state,
                     password: {value: action.value, valid: (action.value.length > 8 && 
-                        !(action.value.includes(' ')) && (action.value.charCodeAt(0) > 64 && 
+                        !(action.value.includes(' ')) && (action.value.charCodeAt(0) > 
+                            64 && 
                         action.value.charCodeAt(0) < 91 ))}
                 }
             case 'INPUT_DUPLICATEPASSWORD': 
                 return {
                     ...state,
-                    duplicatePassword: {value: action.value, valid: (action.value === state.password.value)}
+                    duplicatePassword: {value: action.value, valid: (action.value === 
+                        state.password.value)}
                 }
             case 'ONBLUR':
                 switch(action.subtype){
@@ -140,7 +144,8 @@ function Account(){
     useEffect(()=>{
         let timeout;
         if(formState.email.valid && formState.password.valid 
-            && (formState.typeForm.register ? formState.duplicatePassword.valid : true)){
+            && (formState.typeForm.register ? formState.duplicatePassword.valid : 
+                true)){
             console.log("checking validity!");
             timeout = setTimeout(
                 ()=>{
@@ -161,12 +166,14 @@ function Account(){
             clearTimeout(timeout);
         }
         
-    }, [formState.email.value, formState.password.value, formState.duplicatePassword.value])
+    }, [formState.email.value, formState.password.value, 
+            formState.duplicatePassword.value])
 
 
     //sign in with email
     const signInEmail = async()=>{
-        await createUserWithEmailAndPassword(auth, formState.email.value, formState.password.value)
+        await createUserWithEmailAndPassword(auth, formState.email.value, 
+            formState.password.value)
     }
 
     //sign in with google
@@ -207,17 +214,20 @@ function Account(){
 
     // los inputs son dinamicos, dependiendo de que tipo de registro sea
     const inputs = [
-        <TextField id="email" name="email" key="email" label="Correo" variant= "outlined"
+        <TextField id="email" name="email" key="email" label="Correo" 
+            variant= "outlined"
             type="email" required={true} placeholder='Escriba aqui...' 
             error={(!formState.email.valid && formState.enable.email)}
             onBlur={()=>{dispatchForm({type: 'ONBLUR', subtype: 'EMAIL'})}}
             helperText={`${(!formState.email.valid && formState.enable.email) 
                 ? 'Debe ser un correo': ''}`} 
             size="small" fullWidth 
-            onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_EMAIL', value: value})}}
+            onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_EMAIL', 
+                value: value})}}
             value={formState.email.value}/>, 
 
-            <TextField id="password" name='password' key="password" label="Contraseña" variant="outlined" 
+            <TextField id="password" name='password' key="password" label="Contraseña" 
+            variant="outlined" 
             type="password" 
             required={true}
             placeholder='Escriba aqui...' error={(!formState.password.valid  && 
@@ -228,7 +238,8 @@ function Account(){
                 formState.typeForm.register ? 
                 `Debe empezar con mayus y minimo 8 caracteres de longitud` : '' : ''}`}
             size="small" fullWidth={true}
-            onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_PASSWORD', value: value})}}
+            onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_PASSWORD', 
+            value: value})}}
             value={formState.password.value}/>,
 
 
@@ -239,10 +250,12 @@ function Account(){
                     label="Repite la Contraseña" variant="outlined" type="password" 
                     name="confirmationpassword"
                     required={true}
-                    placeholder='Escriba aqui...' error={(!formState.duplicatePassword.valid && 
+                    placeholder='Escriba aqui...' 
+                    error={(!formState.duplicatePassword.valid && 
                         formState.enable.duplicate)} 
                     onBlur={()=>{dispatchForm({type: 'ONBLUR', subtype: 'DUPLICATE'})}}
-                    helperText={`${(!formState.duplicatePassword.valid && formState.enable.duplicate) 
+                    helperText={`${(!formState.duplicatePassword.valid && 
+                        formState.enable.duplicate) 
                         ? 'no coinciden las contraseñas' : ''}`}
                     size="small" fullWidth={true}
                     onChange={({target: {value}})=>{
@@ -272,7 +285,9 @@ function Account(){
                 {formState.typeForm.register ? "Registrar" : "Iniciar Sesion"}
             </Button>, 
 
-            <p className="text-sm text-center w-full" key="loginMessage"><em>O continuar con</em> </p>,
+            <p className="text-sm text-center w-full" key="loginMessage">
+                <em>O continuar con</em> 
+            </p>,
             <section className='p-1' key="loginOptions">
                 <IconButton>
                     <GoogleIcon fontSize='large'/>
@@ -292,7 +307,8 @@ function Account(){
         <main className="account__main min-h-screen p-6 flex flex-col justify-center ">
             
             <Card hasImage image={AccountFormImage}>
-                <Form title={`${formState.typeForm.login ? 'Iniciar Sesion' : 'Crear Cuenta'}`} 
+                <Form title={`${formState.typeForm.login ? 'Iniciar Sesion' : 
+                    'Crear Cuenta'}`} 
                     onSubmit={formState.typeForm.register ? 
                         onRegister : onLogin}
                     className="bg-white">

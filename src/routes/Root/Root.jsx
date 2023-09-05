@@ -6,6 +6,7 @@ import { ReactDOM } from 'react';
 //components
 import Navbar from '../../page/Navbar/Navbar'
 import Effect from '../../page/Effect/Effect';
+import AuthContext from '../../Contexts/AuthContext';
 
 function Root(){
     //navegador
@@ -22,8 +23,13 @@ function Root(){
 
     return (
         <>
-            <Navbar isAuthenticated={data.isLoggedIn} onLogout={onLogout}/>
-            <Outlet context={[data, setData]}/>
+            <AuthContext.Provider>
+
+                <Navbar isAuthenticated={data.isLoggedIn} onLogout={onLogout}/>
+                <Outlet context={[data, setData]}/>
+
+            </AuthContext.Provider>
+
         </>
     )
 }
