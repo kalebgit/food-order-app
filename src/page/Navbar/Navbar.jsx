@@ -13,7 +13,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 import Navicon from '../NavIcon/Navicon';
 //react
-import {useState} from 'react'
+import {useState, useContext} from 'react'
 
 import ReactDOM from 'react-dom'
 
@@ -24,12 +24,13 @@ import NavLinksContainer from '../NavLinksContainer/NavLinksContainer';
 import './Navbar.scss'
 import Effect from '../Effect/Effect';
 import { LogoutOutlined } from '@mui/icons-material';
+import AuthContext from '../../Contexts/AuthContext';
 
 
 
 
-function Navbar({isAuthenticated, onLogout}){
-    
+function Navbar({onChangeLogged}){
+    const context = useContext(AuthContext);
 
     //show states
     const [showNavbar, setShowNavbar] = useState(false);
@@ -53,7 +54,7 @@ function Navbar({isAuthenticated, onLogout}){
 
     return (
         <header className=" bg-white">
-            {isAuthenticated &&
+            {context.isLoggedIn &&
             <section className="relative flex flex-row flex-nowrap justify-between p-3">
 
                 <section>
@@ -80,7 +81,7 @@ function Navbar({isAuthenticated, onLogout}){
                     'sub-menu__show' : ''}`}>
                         <NavLinksContainer>
                             <Button endIcon={<LogoutIcon/>} 
-                                onClick={onLogout}>Cerrar Sesion</Button>
+                                onClick={context.onChangeLogged}>Cerrar Sesion</Button>
                         </NavLinksContainer>
                     </div>
                     

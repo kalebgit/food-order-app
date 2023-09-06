@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect, useReducer} from 'react'
+import {useState, useRef, useEffect, useReducer, useContext} from 'react'
 
 import { useOutletContext } from 'react-router-dom';
 //sytles
@@ -10,7 +10,7 @@ import Card from '../../components/Cards/Card/Card'
 
 
 //react router
-import { useNavigate } from 'react-router-dom';
+
 
 //mui 
 import TextField from '@mui/material/TextField';
@@ -33,16 +33,13 @@ import { FactorId } from '@firebase/auth';
 import {auth, googleProvider} from '../../config/firebase'
 import { createUserWithEmailAndPassword, signInWithPopup, signOut } from 
 'firebase/auth'
+import AuthContext from '../../Contexts/AuthContext';
 
 
 
 
 function Account(){
-    
-
-    //contexto de router dom
-    const [data, setData] = useOutletContext();
-
+    const context = useContext(AuthContext)
     // reducer que define todos los tipos de validaciones y valores para el formulario
     const [formState, dispatchForm] = useReducer((state, action)=>{
         switch(action.type){
@@ -128,9 +125,7 @@ function Account(){
     useEffect(()=>{
         const StorageIsLoggedIn = localStorage.getItem('isLogged');
         if(StorageIsLoggedIn == '1'){
-            setData((prevState)=>{
-                return {isLoggedIn: true}
-            })
+            context.onChangeLogged();
         }
     }, [])
 
@@ -194,20 +189,15 @@ function Account(){
     //handler para registrar una cuenta
     const onRegister = (event)=>{
         event.preventDefault()
-        localStorage.setItem('isLogged', '1');
-        setData((prevState)=>{
-            return {isLoggedIn: true}
-        })
+        context.onChangeLogged();
     }
 
 
     //handler para iniciar sesion
     const onLogin = (event)=>{
         event.preventDefault();
-        localStorage.setItem('isLogged', '1');
-        setData((prevState)=>{
-            return {isLoggedIn: true}
-        })
+        
+        context.onChangeLogged();
         
     }
 

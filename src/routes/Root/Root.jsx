@@ -1,6 +1,6 @@
 
 //react
-import {Outlet, useNavigate} from 'react-router-dom'
+import {Outlet} from 'react-router-dom'
 import {useState, useEffect} from 'react'
 import { ReactDOM } from 'react';
 //components
@@ -9,24 +9,22 @@ import Effect from '../../page/Effect/Effect';
 import AuthContext from '../../Contexts/AuthContext';
 
 function Root(){
-    //navegador
-    const navigate = useNavigate();
-    const [data, setData] = useState({isLoggedIn: true});
-
-    const onLogout = ()=>{
-        setData( (prevState)=>{
-            return {isLoggedIn: false}
-        })
-
-        localStorage.removeItem('isLogged')
-    }
+    const [data, setData] = useState({isLoggedIn: false});
 
     return (
         <>
-            <AuthContext.Provider>
+            <AuthContext.Provider value={{
+                isLoggedIn: data.isLoggedIn,
+                onChangeLogged: ()=>{
+                        console.log("prevState changed")
+                        setData( (prevState)=>{
+                            return {isLoggedIn: !prevState.isLoggedIn}
+                        })
+                    }   
+                }}>
 
-                <Navbar isAuthenticated={data.isLoggedIn} onLogout={onLogout}/>
-                <Outlet context={[data, setData]}/>
+                <Navbar/>
+                <Outlet/>
 
             </AuthContext.Provider>
 
