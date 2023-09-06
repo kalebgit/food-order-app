@@ -7,6 +7,7 @@ import { ReactDOM } from 'react';
 import Navbar from '../../page/Navbar/Navbar'
 import Effect from '../../page/Effect/Effect';
 import AuthContext from '../../Contexts/AuthContext';
+import { db } from '../../config/firebase';
 
 function Root(){
     const [data, setData] = useState({isLoggedIn: false});

@@ -30,9 +30,9 @@ import Effect from '../../page/Effect/Effect';
 import { FactorId } from '@firebase/auth';
 
 //firebase
-import {auth, googleProvider} from '../../config/firebase'
-import { createUserWithEmailAndPassword, signInWithPopup, signOut } from 
-'firebase/auth'
+// import {auth, googleProvider} from '../../config/firebase'
+// import { createUserWithEmailAndPassword, signInWithPopup, signOut } from 
+// 'firebase/auth'
 import AuthContext from '../../Contexts/AuthContext';
 
 
@@ -65,6 +65,16 @@ function Account(){
 
                 console.log(object)
                 return object
+            case 'INPUT_NAME':
+                return {
+                    ...state,
+                    name: {value: action.value, valid: action.value.length >= 3}
+                }
+            case 'INPUT_PHONE':
+                return {
+                    ...state,
+                    phoneNumber: {value: action.value, valid: action.value.length == 10}
+                }
             case 'INPUT_EMAIL':
                 return {
                     ...state,
@@ -86,6 +96,16 @@ function Account(){
                 }
             case 'ONBLUR':
                 switch(action.subtype){
+                    case 'NAME': 
+                        return {
+                            ...state, 
+                            enable: {...state.enable, name: true}
+                        }
+                    case 'PHONE': 
+                        return {
+                            ...state, 
+                            enable: {...state.enable, phoneNumber: true}
+                        }
                     case 'EMAIL': 
                         return {
                             ...state, 
@@ -112,10 +132,13 @@ function Account(){
     }, {
         typeForm: {register: true, login: false}, 
         validForm: false,
+        name: {value: '', valid: false},
+        phoneNumber: {value: '', valid: false},
         email: {value: '', valid: false},
         password: {value: '', valid: false},
         duplicatePassword: {value: '', valid: false},
-        enable: {email: false, password: false, duplicate: false}
+        enable: {name: false, phoneNumber: false, 
+            email: false, password: false, duplicate: false}
     });
 
     
@@ -204,9 +227,37 @@ function Account(){
 
     // los inputs son dinamicos, dependiendo de que tipo de registro sea
     const inputs = [
+        formState.typeForm.register ? 
+        [
+            <TextField id="name" name="name" key="name" label="Nombre" 
+            variant= "outlined"
+            type="text" required={true} placeholder='Escriba aqui...' 
+            error={(!formState.name.valid && formState.enable.name)}
+            onBlur={()=>{dispatchForm({type: 'ONBLUR', subtype: 'NAME'})}}
+            helperText={`${(!formState.name.valid && formState.enable.name) 
+                ? 'Debe ser un nombre valido (mayor a 3 caracteres)': ''}`} 
+            size="small" fullWidth 
+            onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_NAME', 
+                value: value})}}
+            value={formState.name.value}/>, 
+
+        <TextField id="phoneNumber" name="phoneNumber" key="phoneNumber" label="Numero 
+        de telefono" 
+            variant= "outlined"
+            type="phoneNumber" required={true} placeholder='Escriba aqui...' 
+            error={(!formState.phoneNumber.valid && formState.enable.phoneNumber)}
+            onBlur={()=>{dispatchForm({type: 'ONBLUR', subtype: 'PHONE'})}}
+            helperText={`${(!formState.phoneNumber.valid && formState.enable.phoneNumber) 
+                ? 'Debe ser un numero valido (10 posiciones)': ''}`} 
+            size="small" fullWidth 
+            onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_PHONE', 
+                value: value})}}
+            value={formState.phoneNumber.value}/>
+        ] : <></>, 
+
         <TextField id="email" name="email" key="email" label="Correo" 
             variant= "outlined"
-            type="email" required={true} placeholder='Escriba aqui...' 
+            type="tel" required={true} placeholder='Escriba aqui...' 
             error={(!formState.email.valid && formState.enable.email)}
             onBlur={()=>{dispatchForm({type: 'ONBLUR', subtype: 'EMAIL'})}}
             helperText={`${(!formState.email.valid && formState.enable.email) 
