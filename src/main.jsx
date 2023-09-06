@@ -16,6 +16,9 @@ import Account from './routes/Account/Account';
 import Welcome from './routes/Welcome/Welcome'
 import Home from './routes/Home/Home';
 
+import AdminHome from './routes/Admin/AdminHome/AdminHome';
+import AdminProduct from './routes/Admin/AdminProduct/AdminProduct';
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -29,6 +32,15 @@ const router = createBrowserRouter([
       {
         path: "/home",
         element: <Home/>
+      }, {
+        path: "/admin",
+        element: <AdminHome/>,
+        children: [
+          {
+            path: "/admin-product",
+            element: <AdminProduct/>
+          }
+        ]
       }
     ]
   }

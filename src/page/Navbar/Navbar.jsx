@@ -10,6 +10,7 @@ import LogoDevIcon from '@mui/icons-material/LogoDev';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 import Navicon from '../NavIcon/Navicon';
 //react
@@ -29,7 +30,7 @@ import AuthContext from '../../Contexts/AuthContext';
 
 
 
-function Navbar({onChangeLogged}){
+function Navbar({}){
     const context = useContext(AuthContext);
 
     //show states
@@ -55,7 +56,8 @@ function Navbar({onChangeLogged}){
     return (
         <header className=" bg-white">
             {context.isLoggedIn &&
-            <section className="relative flex flex-row flex-nowrap justify-between p-3">
+            <section className="relative flex flex-row flex-nowrap justify-between 
+            p-3">
 
                 <section>
                     <Tooltip title="options" arrow>
@@ -77,7 +79,8 @@ function Navbar({onChangeLogged}){
                         </IconButton>
                     </Tooltip>
                     
-                    <div className={`sub-menu absolute rounded-b-md right-0 bg-white ${showAccountMenu ? 
+                    <div className={`sub-menu absolute rounded-b-md right-0 
+                    bg-white ${showAccountMenu ? 
                     'sub-menu__show' : ''}`}>
                         <NavLinksContainer>
                             <Button endIcon={<LogoutIcon/>} 
@@ -90,8 +93,10 @@ function Navbar({onChangeLogged}){
             
             </section>  
             }
-            <nav className={`navbar absolute top-0 w-1/4 h-full rounded-e-md bg-white p-2 divide-y ${showNavbar ? 'navbar__show': ''}`}>
-                <section className="flex flex-row flex-nowrap justify-between items-center ">
+            <nav className={`navbar absolute top-0 w-1/4 h-full rounded-e-md 
+                bg-white p-2 divide-y ${showNavbar ? 'navbar__show': ''}`}>
+                <section className="flex flex-row flex-nowrap justify-between 
+                items-center ">
                     <IconButton>
                         <LogoDevIcon/>
                     </IconButton>
@@ -101,10 +106,18 @@ function Navbar({onChangeLogged}){
                 </section>
                 <NavLinksContainer>
 
-                    <Navicon title="home" onClick={onClickToPage} startIcon={<HomeIcon/>} 
+                    <Navicon title="home" onClick={onClickToPage} 
+                        startIcon={<HomeIcon/>} 
                         path="/home"/>
-                    <Navicon title="trend" onClick={onClickToPage} startIcon={<WhatshotIcon/>}/>
-                    <Navicon title="stats" onClick={onClickToPage} startIcon={<QueryStatsIcon/>}/>
+                    <Navicon title="trend" onClick={onClickToPage} 
+                        startIcon={<WhatshotIcon/>}/>
+                    <Navicon title="stats" onClick={onClickToPage} 
+                        startIcon={<QueryStatsIcon/>}/>
+
+                    {context.isAdmin &&
+                    <Navicon title="admin" onClick={onClickToPage} 
+                        startIcon={<AdminPanelSettingsIcon/>}
+                        path="/admin"/>}
 
                 </NavLinksContainer>
                 <section >
@@ -113,7 +126,8 @@ function Navbar({onChangeLogged}){
             </nav>
 
             {showNavbar && 
-            ReactDOM.createPortal(<Effect blur/>, document.getElementById('backdrop-root'))
+            ReactDOM.createPortal(<Effect blur/>, 
+                document.getElementById('backdrop-root'))
             }
         </header>
     )

@@ -10,12 +10,13 @@ import AuthContext from '../../Contexts/AuthContext';
 import { db } from '../../config/firebase';
 
 function Root(){
-    const [data, setData] = useState({isLoggedIn: false});
+    const [data, setData] = useState({isLoggedIn: true, isAdmin: true});
 
     return (
         <>
             <AuthContext.Provider value={{
                 isLoggedIn: data.isLoggedIn,
+                isAdmin: data.isAdmin,
                 onChangeLogged: ()=>{
                         console.log("prevState changed")
                         setData( (prevState)=>{

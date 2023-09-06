@@ -144,13 +144,7 @@ function Account(){
     
     
 
-    //recuperar informacion del storage para actualizar el estado de autenticacion
-    useEffect(()=>{
-        const StorageIsLoggedIn = localStorage.getItem('isLogged');
-        if(StorageIsLoggedIn == '1'){
-            context.onChangeLogged();
-        }
-    }, [])
+    
 
 
     useEffect(()=>{
