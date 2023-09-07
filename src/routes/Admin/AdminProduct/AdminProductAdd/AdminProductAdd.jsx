@@ -10,7 +10,7 @@ import { db } from "../../../../config/firebase";
 function AdminProductAdd(){
 
     const categoryCollection = collection(db, "productCategories")
-
+    const productsCollection = collection(db, "products");
     
     const [productCategories, setProductCategories] = useState([]);
 
@@ -55,6 +55,7 @@ function AdminProductAdd(){
             await addDoc(productsCollection, {name: formData.name.value, 
             description: formData.description.value, category: formData.category.value, 
             price: formData.price.value})
+            dispatchFormData({type: 'RESET'})
         }catch(err){
             console.log(err)
         }

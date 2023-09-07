@@ -5,6 +5,7 @@ import { ButtonGroup, Button, TextField, MenuItem } from "@mui/material"
 import { getDocs, collection, addDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebase";
 import AdminProductAdd from "../AdminProductAdd/AdminProductAdd";
+import AdminProductDelete from "../AdminProductDelete/AdminProductDelete";
 
 
 
@@ -18,6 +19,10 @@ function AdminProduct(){
                 return (
                     <AdminProductAdd/>
                 )
+            case 'delete':
+                return (
+                    <AdminProductDelete/>
+                )
             default: 
                 return <></>
         }
@@ -28,7 +33,7 @@ function AdminProduct(){
         <section className="py-5 flex flex-col justify-start items-center gap-8 ">
             <ButtonGroup variant="text" size="large">
                     <Button onClick={()=>{setOption('add')}}>Agregar</Button>
-                    <Button onClick={()=>{setOption('remove')}}>Eliminar</Button>
+                    <Button onClick={()=>{setOption('delete')}}>Eliminar</Button>
             </ButtonGroup>
             {form()}
             
