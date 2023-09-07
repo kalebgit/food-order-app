@@ -42,17 +42,21 @@ function Home(){
 
     const productsCollection = collection(db, "products");
 
-    useEffect(async ()=>{
-        const data = await getDocs(productsCollection)
-        const filteredData = data.docs.map((doc)=>{
-            return {
-                //returns all the fields as attributes to js
-                ...doc.data(), 
-                id: doc.id
-            }
-        });
+    useEffect(()=>{
+        const getProducts = async ()=>{
+            const data = await getDocs(productsCollection)
+            const filteredData = data.docs.map((doc)=>{
+                return {
+                    //returns all the fields as attributes to js
+                    ...doc.data(), 
+                    id: doc.id
+                }
+            });
+    
+            setProducts(filteredData);
+        }
 
-        setProducts(filteredData);
+        getProducts();
         return ()=>{}
     }, [])
 

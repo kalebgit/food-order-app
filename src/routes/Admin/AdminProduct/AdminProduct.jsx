@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import Form from "../../../components/Forms/Form/Form"
 import { ButtonGroup, Button, TextField, MenuItem } from "@mui/material"
 
@@ -12,6 +12,20 @@ function AdminProduct(){
 
     const [option, setOption] = useState('add');
     const [productCategories, setProductCategories] = useState([]);
+
+    const [formData, dispatchFormData] = useReducer((state, action)=>{
+        switch(action.type){
+            case'INPUT_NAME':
+                return { ...state, name: {value: action.value}}
+            case'INPUT_DESCRIPTION':
+                return { ...state, description: {value: action.value}}
+            case'INPUT_CATEGORY':
+                return { ...state, category: {value: action.value}}
+            case'INPUT_PRICE':
+                return { ...state, price: {value: action.value}}
+        }
+    }, {name: {value: ''}, description: {value: ''}, category: {value: ''}, 
+        price: {value: ''}})
     
 
     useEffect( ()=>{
@@ -32,7 +46,7 @@ function AdminProduct(){
 
 
     const onSubmit = ()=>{
-        
+
     }
 
     form = ()=>{
@@ -45,17 +59,30 @@ function AdminProduct(){
                         <TextField id="name" name="name" key="name" label="Nombre" 
                             variant= "outlined"
                             type="text" required={true} placeholder='Escriba aqui...' 
-                            size="small" fullWidth />
+                            size="small" fullWidth 
+                            value={formData.name.value}
+                            onChange={({target:{value}})=>{
+                                dispatchFormData({type: 'INPUT_NAME', 
+                            value: value})}}/>
                         <TextField id="description" name="description" key="description" 
                             label="Descripcion" 
                             variant= "outlined"
                             type="text" required={true} placeholder='Escriba aqui...' 
-                            size="small" fullWidth />
+                            size="small" fullWidth 
+                            value={formData.description.value}
+                            onChange={({target:{value}})=>{
+                                dispatchFormData({type: 'INPUT_DESCRIPTION', 
+                            value: value})}}/>
                         <TextField
                             id="outlined"
                             select
                             label="Category"
                             fullWidth
+                            required
+                            value={formData.category.value}
+                            onChange={({target:{value}})=>{
+                                dispatchFormData({type: 'INPUT_CATEGORY', 
+                            value: value})}}
                             >
                             {productCategories.map((element) => (
                                 <MenuItem key={element.category} 
@@ -68,8 +95,13 @@ function AdminProduct(){
                             variant= "outlined"
                             type="number" required={true} placeholder='Escriba aqui...' 
                             InputProps={{ inputProps: { min: 1 } }}
-                            size="small" fullWidth />
-                        <Button variant="contained">Subir</Button>
+                            size="small" fullWidth 
+                            value={formData.price.value}
+                            onChange={({target:{value}})=>{
+                                dispatchFormData({type: 'INPUT_PRICE', 
+                            value: value})}}
+                            />
+                        <Button type="submit" variant="contained">Subir</Button>
                     </Form> 
                 )
             default: 
