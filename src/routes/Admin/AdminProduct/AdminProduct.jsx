@@ -2,13 +2,14 @@ import { useEffect, useReducer, useState } from "react";
 import Form from "../../../components/Forms/Form/Form"
 import { ButtonGroup, Button, TextField, MenuItem } from "@mui/material"
 
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, addDoc } from "firebase/firestore";
 import { db } from "../../../config/firebase";
 
 
 function AdminProduct(){
 
     const categoryCollection = collection(db, "productCategories")
+    const productsCollection = collection(db, "products")
 
     const [option, setOption] = useState('add');
     const [productCategories, setProductCategories] = useState([]);
@@ -23,6 +24,9 @@ function AdminProduct(){
                 return { ...state, category: {value: action.value}}
             case'INPUT_PRICE':
                 return { ...state, price: {value: action.value}}
+            case'RESET': 
+                return {name: {value: ''}, description: {value: ''}, category: {value: ''}, 
+                price: {value: ''}}
         }
     }, {name: {value: ''}, description: {value: ''}, category: {value: ''}, 
         price: {value: ''}})
@@ -45,8 +49,16 @@ function AdminProduct(){
     let form = <></>
 
 
-    const onSubmit = ()=>{
-
+    const onSubmitProduct = async(event)=>{
+        try{
+            event.preventDefault();
+            await addDoc(productsCollection, {name: formData.name.value, 
+            description: formData.description.value, category: formData.category.value, 
+            price: formData.price.value})
+        }catch(err){
+            console.log(err)
+        }
+        
     }
 
     form = ()=>{
@@ -54,7 +66,7 @@ function AdminProduct(){
             case 'add': 
                 return (
                     <Form title="Agregar Producto" className="rounded-md 
-                        bg-slate-100"
+                        bg-slate-100" onSubmit={onSubmitProduct}
                         method="" action="">
                         <TextField id="name" name="name" key="name" label="Nombre" 
                             variant= "outlined"
