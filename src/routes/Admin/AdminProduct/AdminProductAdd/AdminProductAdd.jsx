@@ -1,17 +1,17 @@
 import { useEffect, useReducer, useState } from "react";
-import Form from "../../../components/Forms/Form/Form"
+import Form from "../../../../components/Forms/Form/Form"
 import { ButtonGroup, Button, TextField, MenuItem } from "@mui/material"
 
 import { getDocs, collection, addDoc } from "firebase/firestore";
-import { db } from "../../../config/firebase";
+import { db } from "../../../../config/firebase";
 
 
-function AdminProduct(){
+
+function AdminProductAdd(){
 
     const categoryCollection = collection(db, "productCategories")
-    const productsCollection = collection(db, "products")
 
-    const [option, setOption] = useState('add');
+    
     const [productCategories, setProductCategories] = useState([]);
 
     const [formData, dispatchFormData] = useReducer((state, action)=>{
@@ -61,11 +61,11 @@ function AdminProduct(){
         
     }
 
-    form = ()=>{
-        switch(option){
-            case 'add': 
-                return (
-                    <Form title="Agregar Producto" className="rounded-md 
+    
+
+
+    return (
+        <Form title="Agregar Producto" className="rounded-md 
                         bg-slate-100" onSubmit={onSubmitProduct}
                         method="" action="">
                         <TextField id="name" name="name" key="name" label="Nombre" 
@@ -115,22 +115,7 @@ function AdminProduct(){
                             />
                         <Button type="submit" variant="contained">Subir</Button>
                     </Form> 
-                )
-            default: 
-                return <></>
-        }
-    }
-
-
-    return (
-        <section className="py-5 flex flex-col justify-start items-center gap-8 ">
-            <ButtonGroup variant="text" size="large">
-                    <Button onClick={()=>{setOption('add')}}>Agregar</Button>
-                    <Button onClick={()=>{setOption('remove')}}>Eliminar</Button>
-            </ButtonGroup>
-            {form()}
-        </section>
     )
 }
 
-export default AdminProduct
+export default AdminProductAdd

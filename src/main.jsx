@@ -17,7 +17,7 @@ import Welcome from './routes/Welcome/Welcome'
 import Home from './routes/Home/Home';
 
 import AdminHome from './routes/Admin/AdminHome/AdminHome';
-import AdminProduct from './routes/Admin/AdminProduct/AdminProduct';
+import AdminProduct from './routes/Admin/AdminProduct/AdminProduct/AdminProduct';
 
 const router = createBrowserRouter([
   {
