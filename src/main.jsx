@@ -37,7 +37,7 @@ const router = createBrowserRouter([
         element: <AdminHome/>,
         children: [
           {
-            path: "/admin-product",
+            path: "/admin/product",
             element: <AdminProduct/>
           }
         ]
