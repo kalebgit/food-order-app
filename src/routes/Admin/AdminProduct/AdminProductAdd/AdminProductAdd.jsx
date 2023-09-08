@@ -1,9 +1,13 @@
 import { useEffect, useReducer, useState } from "react";
 import Form from "../../../../components/Forms/Form/Form"
 import { ButtonGroup, Button, TextField, MenuItem } from "@mui/material"
+import UploadIcon from '@mui/icons-material/Upload';
 
 import { getDocs, collection, addDoc } from "firebase/firestore";
 import { db } from "../../../../config/firebase";
+import { storage } from "../../../../config/firebase";
+import {ref, uploadBytes} from 'firebase/storage'
+import { v4 } from "uuid";
 
 
 
@@ -24,12 +28,14 @@ function AdminProductAdd(){
                 return { ...state, category: {value: action.value}}
             case'INPUT_PRICE':
                 return { ...state, price: {value: action.value}}
+            case 'INPUT_IMAGE':
+                return {...state, imageUpload: {value: action.value}}
             case'RESET': 
                 return {name: {value: ''}, description: {value: ''}, category: {value: ''}, 
-                price: {value: ''}}
+                price: {value: ''}, imageUpload: {value: null}}
         }
     }, {name: {value: ''}, description: {value: ''}, category: {value: ''}, 
-        price: {value: ''}})
+        price: {value: ''}, imageUpload: {value: null}})
     
 
     useEffect( ()=>{
@@ -55,6 +61,7 @@ function AdminProductAdd(){
             await addDoc(productsCollection, {name: formData.name.value, 
             description: formData.description.value, category: formData.category.value, 
             price: formData.price.value})
+            imageUpload();
             dispatchFormData({type: 'RESET'})
         }catch(err){
             console.log(err)
@@ -62,7 +69,18 @@ function AdminProductAdd(){
         
     }
 
-    
+    const imageUpload = ()=>{
+        if(formData.imageUpload.value == null) return;
+        const imageRef = ref(storage, `/products/${formData.imageUpload.value.name + v4()}`);
+        uploadBytes(imageRef, formData.imageUpload.value)
+            .then((response)=>{
+                console.log("image uploaded")
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
+
+    }
 
 
     return (
@@ -114,6 +132,11 @@ function AdminProductAdd(){
                                 dispatchFormData({type: 'INPUT_PRICE', 
                             value: value})}}
                             />
+                        <label className=" self-start " for="imagen">
+                            Imagen del producto </label>
+                        <input type="file" name="imagen" onChange={({target: {files}})=>{
+                            dispatchFormData({type: 'INPUT_IMAGE', value: files[0]})
+                        }}/>
                         <Button type="submit" variant="contained">Subir</Button>
                     </Form> 
     )
