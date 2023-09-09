@@ -20,42 +20,49 @@ function AuthContextProvider({children}){
 
     onAuthStateChanged(auth, (user)=>{
         if(user){
-            setIsLoggedIn(true);
-            if(getUser(user.uid).isAdmin){
-                setIsAdmin(true);
-            }
+            console.log("tiene cuenta iniciada")
+            setIsLoggedIn(true)
+            getUser(user.uid)
+                .then((currentUserDoc)=>{
+                    console.log("el usuario actual es: ");
+                    console.log(currentUserDoc)
+                    
+                    if(currentUserDoc.isAdmin){
+                        console.log("el usuario acutal es admin")
+                        setIsAdmin(true);
+                    }
+                })
+                .catch((err)=>{
+                    console.log(err)
+                })
+            
+            
             
         }else{
+            console.log("no tiene cuenta iniciada")
             setIsLoggedIn(false);
+            setIsAdmin(false);
         }
     })
 
     const getUser = async(uid)=>{
         const data = await getDocs(clientsCollection)
-        console.log(data)
-        console.log(data.docs);
+        // console.log(data)
+        // console.log(data.docs);
 
         const user = data.docs.find((element)=>{
-            const userDocRef = doc(db, "clients", element.id)
-            getDoc(userDocRef)
-                .then((doc)=>{
-                    console.log("el documento es: ")
-                    console.log(doc)
-                    console.log("atributos: ")
-                    console.log({...doc.data()})
-                    return doc.id == uid
-                })
-                .catch((error)=>{
-                    console.log(error)
-                })
-
-            
+            const data = {...element.data()}
+            // console.log("comparando: " + uid + " y " + data.id)
+            return data.id = uid
             
         })
 
-        
+        const userObject = {...user.data()};
 
-        return user;
+        // console.log("objeto recuperado: ")
+        // console.log( userObject)
+
+        return userObject;
     }
 
     //sign in with google
@@ -79,7 +86,9 @@ function AuthContextProvider({children}){
             isLoggedIn: isLoggedIn,
             isAdmin: isAdmin, 
             logout: async()=>{
-                await signOut(myFirebase.auth);
+                console.log("cerrando sesion")
+                await signOut(auth);
+                console.log("sesion cerrada")
             }, 
             //to sign with email
             registerEmail: async({name, phoneNumber, email, password})=>{

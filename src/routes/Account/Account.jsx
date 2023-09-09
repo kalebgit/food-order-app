@@ -312,13 +312,25 @@ function Account(){
     return (
         <main className="account__main min-h-screen p-6 flex flex-col justify-center ">
             {context.isLoggedIn ? 
+                <h1 className="text-center font-bold text-xl">
+                Bienvenido 🍃
+                </h1>
+
+                :
+
                 <Card hasImage image={AccountFormImage}>
                 <Form title={`${formState.typeForm.login ? 'Iniciar Sesion' : 
                     'Crear Cuenta'}`} 
                     onSubmit={(event)=>{
                         event.preventDefault();
+                        dispatchForm({type: 'RESET_INPUTS'})
                         try{
-                            context.registerEmail(formState)
+                            if(formState.typeForm.register){
+                                context.registerEmail(formState)
+                            }else{
+                                context.signInEmail(formState)
+                            }
+                            
                             setErrorMessage('')
                         }catch(err){
                             switch(err.code){
@@ -331,10 +343,7 @@ function Account(){
                     {inputs}
                 </Form>
                 </Card>
-                :
-                <h1 className="text-center font-bold text-xl">
-                    Y has iniciado sesion 🍃
-                    </h1>
+                
             }
             
             
