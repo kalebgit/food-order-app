@@ -14,6 +14,10 @@ import '@fontsource/inter';
 import Root from './routes/Root/Root'
 import Account from './routes/Account/Account';
 import Welcome from './routes/Welcome/Welcome'
+import Home from './routes/Home/Home';
+
+import AdminHome from './routes/Admin/AdminHome/AdminHome';
+import AdminProduct from './routes/Admin/AdminProduct/AdminProduct/AdminProduct';
 
 const router = createBrowserRouter([
   {
@@ -24,6 +28,19 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Account/>
+      },
+      {
+        path: "/home",
+        element: <Home/>
+      }, {
+        path: "/admin",
+        element: <AdminHome/>,
+        children: [
+          {
+            path: "/admin/product",
+            element: <AdminProduct/>
+          }
+        ]
       }
     ]
   }

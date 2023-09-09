@@ -9,10 +9,13 @@ import { Button } from '@mui/material';
 import LogoDevIcon from '@mui/icons-material/LogoDev';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
-import NoAccountsIcon from '@mui/icons-material/NoAccounts';
+import LogoutIcon from '@mui/icons-material/Logout';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+
+import Navicon from '../NavIcon/Navicon';
 //react
-import {useState} from 'react'
-import {Link} from 'react-router-dom'
+import {useState, useContext} from 'react'
+
 import ReactDOM from 'react-dom'
 
 
@@ -21,12 +24,15 @@ import ReactDOM from 'react-dom'
 import NavLinksContainer from '../NavLinksContainer/NavLinksContainer';
 import './Navbar.scss'
 import Effect from '../Effect/Effect';
+import { LogoutOutlined } from '@mui/icons-material';
+import AuthContext from '../../Contexts/Auth/AuthContext';
 
 
 
 
-function Navbar({isAuthenticated, onLogout}){
-    
+
+function Navbar({}){
+    const context = useContext(AuthContext)
 
     //show states
     const [showNavbar, setShowNavbar] = useState(false);
@@ -43,10 +49,16 @@ function Navbar({isAuthenticated, onLogout}){
         setShowAccountMenu((prevState)=>!prevState);
     }
 
+    //cuando clickea una pagina
+    const onClickToPage = ()=>{
+        setShowNavbar(false);
+    }
+
     return (
         <header className=" bg-white">
-            {isAuthenticated &&
-            <section className="relative flex flex-row flex-nowrap justify-between p-3">
+            {context.isLoggedIn &&
+            <section className="relative flex flex-row flex-nowrap justify-between 
+            p-3">
 
                 <section>
                     <Tooltip title="options" arrow>
@@ -68,11 +80,12 @@ function Navbar({isAuthenticated, onLogout}){
                         </IconButton>
                     </Tooltip>
                     
-                    <div className={`sub-menu absolute rounded-b-md right-0 bg-white ${showAccountMenu ? 
+                    <div className={`sub-menu absolute rounded-b-md right-0 
+                    bg-white ${showAccountMenu ? 
                     'sub-menu__show' : ''}`}>
                         <NavLinksContainer>
-                            <Button endIcon={<NoAccountsIcon/>} 
-                                onClick={onLogout}>Cerrar Sesion</Button>
+                            <Button endIcon={<LogoutIcon/>} 
+                                onClick={context.logout}>Cerrar Sesion</Button>
                         </NavLinksContainer>
                     </div>
                     
@@ -81,8 +94,10 @@ function Navbar({isAuthenticated, onLogout}){
             
             </section>  
             }
-            <nav className={`navbar absolute top-0 w-1/4 h-full rounded-e-md bg-white p-2 divide-y ${showNavbar ? 'navbar__show': ''}`}>
-                <section className="flex flex-row flex-nowrap justify-between items-center ">
+            <nav className={`navbar absolute top-0 w-1/4 h-full rounded-e-md 
+                bg-white p-2 divide-y ${showNavbar ? 'navbar__show': ''}`}>
+                <section className="flex flex-row flex-nowrap justify-between 
+                items-center ">
                     <IconButton>
                         <LogoDevIcon/>
                     </IconButton>
@@ -91,20 +106,20 @@ function Navbar({isAuthenticated, onLogout}){
                     </IconButton>
                 </section>
                 <NavLinksContainer>
-                    <Link to="" className="w-full">
-                        <Button variant="text" startIcon={<HomeIcon/>}
-                        className='w-full' >Home</Button>
-                    </Link>
-                    
-                    <Link to="" className="w-full">
-                        <Button variant="text" startIcon={<WhatshotIcon/>}
-                        className='w-full' >Trend</Button>
-                    </Link>
 
-                    <Link to="" className="w-full">
-                        <Button variant="text" startIcon={<QueryStatsIcon/>}
-                        className='w-full' >Stats</Button>
-                    </Link>
+                    <Navicon title="home" onClick={onClickToPage} 
+                        startIcon={<HomeIcon/>} 
+                        path="/home"/>
+                    <Navicon title="trend" onClick={onClickToPage} 
+                        startIcon={<WhatshotIcon/>}/>
+                    <Navicon title="stats" onClick={onClickToPage} 
+                        startIcon={<QueryStatsIcon/>}/>
+
+                    {context.isAdmin &&
+                    <Navicon title="admin" onClick={onClickToPage} 
+                        startIcon={<AdminPanelSettingsIcon/>}
+                        path="/admin"/>}
+
                 </NavLinksContainer>
                 <section >
                     
@@ -112,7 +127,8 @@ function Navbar({isAuthenticated, onLogout}){
             </nav>
 
             {showNavbar && 
-            ReactDOM.createPortal(<Effect blur/>, document.getElementById('backdrop-root'))
+            ReactDOM.createPortal(<Effect blur/>, 
+                document.getElementById('backdrop-root'))
             }
         </header>
     )

@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect, useReducer} from 'react'
+import {useState, useRef, useEffect, useReducer, useContext} from 'react'
 
 import { useOutletContext } from 'react-router-dom';
 //sytles
@@ -8,31 +8,51 @@ import './Account.scss'
 import Form from '../../components/Forms/Form/Form';
 import Card from '../../components/Cards/Card/Card'
 
+
+//react router
+
+
 //mui 
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
+import GoogleIcon from '@mui/icons-material/Google';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import AppleIcon from '@mui/icons-material/Apple';
+import LoginIcon from '@mui/icons-material/Login';
 // import { IconButton, InputAdornment } from '@mui/material';
 // import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 //images
 import AccountFormImage from '../../assets/img/account/account-form.jpg'
-import { Button, Typography } from '@mui/material';
+import { Button, Icon, IconButton, Typography } from '@mui/material';
 import Modal from '../../components/Modals/Modal/Modal';
 import Effect from '../../page/Effect/Effect';
+import { FactorId } from '@firebase/auth';
+
+//firebase
+import {auth, db, googleProvider} from '../../config/firebase'
+import { createUserWithEmailAndPassword, signInWithPopup, signOut } from 
+'firebase/auth'
+import AuthContext from '../../Contexts/Auth/AuthContext';
+import { addDoc, collection } from '@firebase/firestore';
+
+
+
 
 function Account(){
-    //contexto de router dom
-    const [data, setData] = useOutletContext();
 
+    const context = useContext(AuthContext)
+    
     // reducer que define todos los tipos de validaciones y valores para el formulario
     const [formState, dispatchForm] = useReducer((state, action)=>{
         switch(action.type){
             case 'RESET_INPUTS': 
                 return {
                     ...state, 
-                    username: {value: '', valid: false},
+                    email: {value: '', valid: false},
                     password: {value: '', valid: false},
-                    duplicatePassword: {value: '', valid: false}
+                    duplicatePassword: {value: '', valid: false},
+                    enable: {email: false, password: false, duplicate: false}
                 }
             case 'INPUT_VALIDFORM':
                 return {
@@ -42,27 +62,72 @@ function Account(){
             case 'INPUT_TYPEFORM': 
                 let object  = {
                     ...state,
-                    typeForm: {register: !(state.typeForm.register), login: !(state.typeForm.login)}
+                    typeForm: {register: !(state.typeForm.register), login: 
+                        !(state.typeForm.login)}
                 }
 
                 console.log(object)
                 return object
-            case 'INPUT_USERNAME':
+            case 'INPUT_NAME':
                 return {
                     ...state,
-                    username: {value: action.value, valid: action.value.length > 6}
+                    name: {value: action.value, valid: action.value.length >= 3}
+                }
+            case 'INPUT_PHONE':
+                return {
+                    ...state,
+                    phoneNumber: {value: action.value, valid: action.value.length == 10}
+                }
+            case 'INPUT_EMAIL':
+                return {
+                    ...state,
+                    email: {value: action.value, valid: action.value.includes('@')}
                 }
             case 'INPUT_PASSWORD': 
                 return {
                     ...state,
                     password: {value: action.value, valid: (action.value.length > 8 && 
-                        !(action.value.includes(' ')) && (action.value.charCodeAt(0) > 64 && 
+                        !(action.value.includes(' ')) && (action.value.charCodeAt(0) > 
+                            64 && 
                         action.value.charCodeAt(0) < 91 ))}
                 }
             case 'INPUT_DUPLICATEPASSWORD': 
                 return {
                     ...state,
-                    duplicatePassword: {value: action.value, valid: (action.value === state.password.value)}
+                    duplicatePassword: {value: action.value, valid: (action.value === 
+                        state.password.value)}
+                }
+            case 'ONBLUR':
+                switch(action.subtype){
+                    case 'NAME': 
+                        return {
+                            ...state, 
+                            enable: {...state.enable, name: true}
+                        }
+                    case 'PHONE': 
+                        return {
+                            ...state, 
+                            enable: {...state.enable, phoneNumber: true}
+                        }
+                    case 'EMAIL': 
+                        return {
+                            ...state, 
+                            enable: {...state.enable, email: true}
+                        }
+                    case 'PASSWORD': 
+                        return {
+                            ...state, 
+                            enable: {...state.enable, password: true}
+                        }
+                    case 'DUPLICATE': 
+                        return {
+                            ...state, 
+                            enable: {...state.enable, duplicate: true}
+                        }
+                    default: 
+                        return {
+                            ...state
+                        }
                 }
             default: 
                 return {...state}
@@ -70,23 +135,19 @@ function Account(){
     }, {
         typeForm: {register: true, login: false}, 
         validForm: false,
-        username: {value: '', valid: false},
+        name: {value: '', valid: false},
+        phoneNumber: {value: '', valid: false},
+        email: {value: '', valid: false},
         password: {value: '', valid: false},
-        duplicatePassword: {value: '', valid: false}
+        duplicatePassword: {value: '', valid: false},
+        enable: {name: false, phoneNumber: false, 
+            email: false, password: false, duplicate: false}
     });
 
     
-    
+    const [errorMessage, setErrorMessage] = useState('');
 
-    //recuperar informacion del storage para actualizar el estado de autenticacion
-    useEffect(()=>{
-        const StorageIsLoggedIn = localStorage.getItem('isLogged');
-        if(StorageIsLoggedIn == '1'){
-            setData((prevState)=>{
-                return {isLoggedIn: true}
-            })
-        }
-    }, [])
+    const usersCollection = collection(db, "users");
 
 
     useEffect(()=>{
@@ -97,7 +158,9 @@ function Account(){
     //verificacion del forms
     useEffect(()=>{
         let timeout;
-        if(formState.username.valid && formState.password.valid && formState.duplicatePassword.valid){
+        if(formState.email.valid && formState.password.valid 
+            && (formState.typeForm.register ? formState.duplicatePassword.valid : 
+                true)){
             console.log("checking validity!");
             timeout = setTimeout(
                 ()=>{
@@ -118,7 +181,13 @@ function Account(){
             clearTimeout(timeout);
         }
         
-    }, [formState.username.value, formState.password.value, formState.duplicatePassword.value])
+    }, [formState.email.value, formState.password.value, 
+            formState.duplicatePassword.value])
+
+
+    
+
+    
 
     //metodo que cambia el estado para que se muestre el nav
     const onClickType = (event)=>{
@@ -126,46 +195,63 @@ function Account(){
         dispatchForm({type: 'INPUT_TYPEFORM'})
     }
 
-    //handler para registrar una cuenta
-    const onRegister = (event)=>{
-        event.preventDefault();
-        localStorage.setItem('isLogged', '1');
-        setData((prevState)=>{
-            return {isLoggedIn: true}
-        })
-    }
-
-
-    //handler para iniciar sesion
-    const onLogin = (event)=>{
-        event.preventDefault();
-        localStorage.setItem('isLogged', '1');
-        setData((prevState)=>{
-            return {isLoggedIn: true}
-        })
-        
-    }
-
 
     // los inputs son dinamicos, dependiendo de que tipo de registro sea
     const inputs = [
-        <TextField id="username" key="username" label="Nombre de usuario" variant= "outlined"
+        formState.typeForm.register ? 
+        [
+            <TextField id="name" name="name" key="name" label="Nombre" 
+            variant= "outlined"
             type="text" required={true} placeholder='Escriba aqui...' 
-            error={!formState.username.valid}
-            helperText={`${!formState.username.valid ? 'Minimo 6 caracteres': ''}`} 
+            error={(!formState.name.valid && formState.enable.name)}
+            onBlur={()=>{dispatchForm({type: 'ONBLUR', subtype: 'NAME'})}}
+            helperText={`${(!formState.name.valid && formState.enable.name) 
+                ? 'Debe ser un nombre valido (mayor a 3 caracteres)': ''}`} 
             size="small" fullWidth 
-            onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_USERNAME', value: value})}}
-            value={formState.username.value}/>, 
+            onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_NAME', 
+                value: value})}}
+            value={formState.name.value}/>, 
 
-            <TextField id="password" key="password" label="Contraseña" variant="outlined" 
+        <TextField id="phoneNumber" name="phoneNumber" key="phoneNumber" label="Numero 
+        de telefono" 
+            variant= "outlined"
+            type="phoneNumber" required={true} placeholder='Escriba aqui...' 
+            error={(!formState.phoneNumber.valid && formState.enable.phoneNumber)}
+            onBlur={()=>{dispatchForm({type: 'ONBLUR', subtype: 'PHONE'})}}
+            helperText={`${(!formState.phoneNumber.valid && formState.enable.phoneNumber) 
+                ? 'Debe ser un numero valido (10 posiciones)': ''}`} 
+            size="small" fullWidth 
+            onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_PHONE', 
+                value: value})}}
+            value={formState.phoneNumber.value}/>
+        ] : <></>, 
+
+        <TextField id="email" name="email" key="email" label="Correo" 
+            variant= "outlined"
+            type="tel" required={true} placeholder='Escriba aqui...' 
+            error={(!formState.email.valid && formState.enable.email)}
+            onBlur={()=>{dispatchForm({type: 'ONBLUR', subtype: 'EMAIL'})}}
+            helperText={`${(!formState.email.valid && formState.enable.email) 
+                ? 'Debe ser un correo': ''}`} 
+            size="small" fullWidth 
+            onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_EMAIL', 
+                value: value})}}
+            value={formState.email.value}/>, 
+
+            <TextField id="password" name='password' key="password" label="Contraseña" 
+            variant="outlined" 
             type="password" 
             required={true}
-            placeholder='Escriba aqui...' error={!formState.password.valid} 
-            helperText={`${!formState.password.valid ? 
+            placeholder='Escriba aqui...' error={(!formState.password.valid  && 
+                formState.enable.password)} 
+            onBlur={()=>{dispatchForm({type: 'ONBLUR', subtype: 'PASSWORD'})}}
+            helperText={`${(!formState.password.valid  && 
+                formState.enable.password) ? 
                 formState.typeForm.register ? 
                 `Debe empezar con mayus y minimo 8 caracteres de longitud` : '' : ''}`}
             size="small" fullWidth={true}
-            onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_PASSWORD', value: value})}}
+            onChange={({target: {value}})=>{dispatchForm({type: 'INPUT_PASSWORD', 
+            value: value})}}
             value={formState.password.value}/>,
 
 
@@ -174,9 +260,15 @@ function Account(){
             [
                 <TextField id="confirmationpassword" key="confirmationpassword" 
                     label="Repite la Contraseña" variant="outlined" type="password" 
+                    name="confirmationpassword"
                     required={true}
-                    placeholder='Escriba aqui...' error={!formState.duplicatePassword.valid} 
-                    helperText={`${!formState.duplicatePassword.valid ? 'no coinciden las contraseñas' : ''}`}
+                    placeholder='Escriba aqui...' 
+                    error={(!formState.duplicatePassword.valid && 
+                        formState.enable.duplicate)} 
+                    onBlur={()=>{dispatchForm({type: 'ONBLUR', subtype: 'DUPLICATE'})}}
+                    helperText={`${(!formState.duplicatePassword.valid && 
+                        formState.enable.duplicate) 
+                        ? 'no coinciden las contraseñas' : ''}`}
                     size="small" fullWidth={true}
                     onChange={({target: {value}})=>{
                         dispatchForm(
@@ -197,33 +289,44 @@ function Account(){
             <p key="RegisterMessage">
                 No tienes cuenta? 
                 <Link underline="hover" onClick={onClickType} > Registrate</Link>
-            </p>,,
+            </p>,
 
 
             <Button variant='contained' type="submit" key="submit"
-                disabled={!formState.validForm}>
+                disabled={!formState.validForm} startIcon={<LoginIcon/>}>
                 {formState.typeForm.register ? "Registrar" : "Iniciar Sesion"}
-            </Button>
+            </Button>, 
+
+            // <p className="text-sm text-center w-full" key="loginMessage">
+            //     <em>O continuar con</em> 
+            // </p>,
+            // <section className='p-1' key="loginOptions">
+            //     <IconButton onClick={signInGoogle}>
+            //         <GoogleIcon fontSize='large'/>
+            //     </IconButton>
+            //     {/* <IconButton>
+            //         <FacebookIcon fontSize="large"/>
+            //     </IconButton>
+            //     <IconButton>
+            //         <AppleIcon fontSize="large"/>
+            //     </IconButton> */}
+            // </section>
             
     ]
 
     //componente
     return (
         <main className="account__main min-h-screen p-6 flex flex-col justify-center ">
-            {data.isLoggedIn ? 
-
-                <Typography variant="h2" className="text-center">Bienvenido De Nuevo
-                😀</Typography>
-            :
+            
             <Card hasImage image={AccountFormImage}>
-                <Form title={`${formState.typeForm.login ? 'Iniciar Sesion' : 'Crear Cuenta'}`} 
-                    onSubmit={formState.typeForm.register ? 
-                        onRegister : onLogin}
+                <Form title={`${formState.typeForm.login ? 'Iniciar Sesion' : 
+                    'Crear Cuenta'}`} 
+                    onSubmit={context.signInEmail}
                     className="bg-white">
                     {inputs}
                 </Form>
             </Card>
-            }
+            
             
         </main>
         
