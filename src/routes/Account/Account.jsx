@@ -30,16 +30,19 @@ import Effect from '../../page/Effect/Effect';
 import { FactorId } from '@firebase/auth';
 
 //firebase
-// import {auth, googleProvider} from '../../config/firebase'
-// import { createUserWithEmailAndPassword, signInWithPopup, signOut } from 
-// 'firebase/auth'
-import AuthContext from '../../Contexts/AuthContext';
+import {auth, db, googleProvider} from '../../config/firebase'
+import { createUserWithEmailAndPassword, signInWithPopup, signOut } from 
+'firebase/auth'
+import AuthContext from '../../Contexts/Auth/AuthContext';
+import { addDoc, collection } from '@firebase/firestore';
 
 
 
 
 function Account(){
+
     const context = useContext(AuthContext)
+    
     // reducer que define todos los tipos de validaciones y valores para el formulario
     const [formState, dispatchForm] = useReducer((state, action)=>{
         switch(action.type){
@@ -142,9 +145,9 @@ function Account(){
     });
 
     
-    
+    const [errorMessage, setErrorMessage] = useState('');
 
-    
+    const usersCollection = collection(db, "users");
 
 
     useEffect(()=>{
@@ -182,40 +185,14 @@ function Account(){
             formState.duplicatePassword.value])
 
 
-    //sign in with email
-    const signInEmail = async()=>{
-        await createUserWithEmailAndPassword(auth, formState.email.value, 
-            formState.password.value)
-    }
+    
 
-    //sign in with google
-    const signInGoogle = async()=>{
-        await signInWithPopup(auth, googleProvider);
-    }
-
-    const logout = async()=>{
-        await signOut(auth);
-    }
+    
 
     //metodo que cambia el estado para que se muestre el nav
     const onClickType = (event)=>{
         event.preventDefault();
         dispatchForm({type: 'INPUT_TYPEFORM'})
-    }
-
-    //handler para registrar una cuenta
-    const onRegister = (event)=>{
-        event.preventDefault()
-        context.onChangeLogged();
-    }
-
-
-    //handler para iniciar sesion
-    const onLogin = (event)=>{
-        event.preventDefault();
-        
-        context.onChangeLogged();
-        
     }
 
 
@@ -320,20 +297,20 @@ function Account(){
                 {formState.typeForm.register ? "Registrar" : "Iniciar Sesion"}
             </Button>, 
 
-            <p className="text-sm text-center w-full" key="loginMessage">
-                <em>O continuar con</em> 
-            </p>,
-            <section className='p-1' key="loginOptions">
-                <IconButton>
-                    <GoogleIcon fontSize='large'/>
-                </IconButton>
-                <IconButton>
-                    <FacebookIcon fontSize="large"/>
-                </IconButton>
-                <IconButton>
-                    <AppleIcon fontSize="large"/>
-                </IconButton>
-            </section>
+            // <p className="text-sm text-center w-full" key="loginMessage">
+            //     <em>O continuar con</em> 
+            // </p>,
+            // <section className='p-1' key="loginOptions">
+            //     <IconButton onClick={signInGoogle}>
+            //         <GoogleIcon fontSize='large'/>
+            //     </IconButton>
+            //     {/* <IconButton>
+            //         <FacebookIcon fontSize="large"/>
+            //     </IconButton>
+            //     <IconButton>
+            //         <AppleIcon fontSize="large"/>
+            //     </IconButton> */}
+            // </section>
             
     ]
 
@@ -344,8 +321,7 @@ function Account(){
             <Card hasImage image={AccountFormImage}>
                 <Form title={`${formState.typeForm.login ? 'Iniciar Sesion' : 
                     'Crear Cuenta'}`} 
-                    onSubmit={formState.typeForm.register ? 
-                        onRegister : onLogin}
+                    onSubmit={context.signInEmail}
                     className="bg-white">
                     {inputs}
                 </Form>

@@ -25,13 +25,14 @@ import NavLinksContainer from '../NavLinksContainer/NavLinksContainer';
 import './Navbar.scss'
 import Effect from '../Effect/Effect';
 import { LogoutOutlined } from '@mui/icons-material';
-import AuthContext from '../../Contexts/AuthContext';
+import AuthContext from '../../Contexts/Auth/AuthContext';
+
 
 
 
 
 function Navbar({}){
-    const context = useContext(AuthContext);
+    const context = useContext(AuthContext)
 
     //show states
     const [showNavbar, setShowNavbar] = useState(false);
@@ -84,7 +85,7 @@ function Navbar({}){
                     'sub-menu__show' : ''}`}>
                         <NavLinksContainer>
                             <Button endIcon={<LogoutIcon/>} 
-                                onClick={context.onChangeLogged}>Cerrar Sesion</Button>
+                                onClick={context.logout}>Cerrar Sesion</Button>
                         </NavLinksContainer>
                     </div>
                     
