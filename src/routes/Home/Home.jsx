@@ -17,6 +17,8 @@ import './Home.scss'
 import { getDocs, collection } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from '../../config/firebase';
+import Scroll from '../../components/Scroll/Scroll';
+import Item from '../../components/Item/Item';
 
 
 //colors
@@ -42,6 +44,9 @@ function Home(){
 
     const productsCollection = collection(db, "products");
 
+
+    
+
     useEffect(()=>{
         const getProducts = async ()=>{
             const data = await getDocs(productsCollection)
@@ -64,7 +69,11 @@ function Home(){
         <main className="main-home min-h-screen pt-14">
             <Typography variant='h2' component="h1" className="text-center main-home__title"  
                 gutterBottom>Food Mood</Typography>
-            {/* <Item /> */}
+            <Scroll horizontal>
+                <Item vertical product={{}}/>
+                <Item vertical product={{}}/>
+                <Item vertical product={{}}/>
+            </Scroll>
         </main>
     )
 }

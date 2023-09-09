@@ -2,7 +2,8 @@
 
 function Scroll({children, vertical, horizontal}){
     return (
-        <section className={` flex ${horizontal && 'flex-row'} `}>
+        <section className={`px-8 flex ${horizontal && 
+            'flex-row justify-start items-center'} `}>
             {children}
         </section>
     )

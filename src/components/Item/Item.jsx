@@ -4,10 +4,14 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 import './Item.scss'
+import { useEffect, useState } from 'react';
 
 function Item({horizontal, vertical, product: {id, title, price, image}}){
+
+    
+
     return (
-        <article className="item h-96 p-4 flex flex-col justify-between items-stretch"
+        <article className="item h-96 p-4 rounded-md flex flex-col justify-between items-stretch"
             style={{backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${image})`}}>
                 <div>
                     <IconButton onClick>
