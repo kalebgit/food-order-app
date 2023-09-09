@@ -29,12 +29,8 @@ import Modal from '../../components/Modals/Modal/Modal';
 import Effect from '../../page/Effect/Effect';
 import { FactorId } from '@firebase/auth';
 
-//firebase
-import {auth, db, googleProvider} from '../../config/firebase'
-import { createUserWithEmailAndPassword, signInWithPopup, signOut } from 
-'firebase/auth'
+
 import AuthContext from '../../Contexts/Auth/AuthContext';
-import { addDoc, collection } from '@firebase/firestore';
 
 
 
@@ -146,8 +142,6 @@ function Account(){
 
     
     const [errorMessage, setErrorMessage] = useState('');
-
-    const usersCollection = collection(db, "users");
 
 
     useEffect(()=>{
@@ -317,15 +311,32 @@ function Account(){
     //componente
     return (
         <main className="account__main min-h-screen p-6 flex flex-col justify-center ">
-            
-            <Card hasImage image={AccountFormImage}>
+            {context.isLoggedIn ? 
+                <Card hasImage image={AccountFormImage}>
                 <Form title={`${formState.typeForm.login ? 'Iniciar Sesion' : 
                     'Crear Cuenta'}`} 
-                    onSubmit={context.signInEmail}
+                    onSubmit={(event)=>{
+                        event.preventDefault();
+                        try{
+                            context.registerEmail(formState)
+                            setErrorMessage('')
+                        }catch(err){
+                            switch(err.code){
+                                case 'auth/email-already-in-use': 
+                                    setErrorMessage('el correo ya esta registrado')
+                            }
+                        }
+                    }}
                     className="bg-white">
                     {inputs}
                 </Form>
-            </Card>
+                </Card>
+                :
+                <h1 className="text-center font-bold text-xl">
+                    Y has iniciado sesion 🍃
+                    </h1>
+            }
+            
             
             
         </main>

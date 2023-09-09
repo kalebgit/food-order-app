@@ -1,17 +1,23 @@
-import { db } from '../../config/firebase';
-import { getAuth, onAuthStateChanged } from '@firebase/auth';
-import { collection, getDocs } from '@firebase/firestore';
-import * as myFirebase from '../../config/firebase';
+
+import {  onAuthStateChanged, signInWithEmailAndPassword } from '@firebase/auth';
+import { collection, getDocs, addDoc, getDoc, doc} from '@firebase/firestore';
+import { auth } from '../../config/firebase';
 import AuthContext from "./AuthContext";
 import {useState} from 'react'
 
+//firebase
+import {db} from '../../config/firebase'
+import { createUserWithEmailAndPassword, signInWithPopup, signOut } from 
+'firebase/auth'
+
 function AuthContextProvider({children}){
 
-    const [isAdmin, setIsAdmin] = useState(true);
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 
-    const auth = getAuth();
+    const clientsCollection = collection(db, 'clients')
+
     onAuthStateChanged(auth, (user)=>{
         if(user){
             setIsLoggedIn(true);
@@ -25,15 +31,29 @@ function AuthContextProvider({children}){
     })
 
     const getUser = async(uid)=>{
-        const data = await getDocs(usersCollection)
-
+        const data = await getDocs(clientsCollection)
+        console.log(data)
         console.log(data.docs);
 
-        const user = data.docs.find((doc)=>{
-            return doc.id == uid
+        const user = data.docs.find((element)=>{
+            const userDocRef = doc(db, "clients", element.id)
+            getDoc(userDocRef)
+                .then((doc)=>{
+                    console.log("el documento es: ")
+                    console.log(doc)
+                    console.log("atributos: ")
+                    console.log({...doc.data()})
+                    return doc.id == uid
+                })
+                .catch((error)=>{
+                    console.log(error)
+                })
+
+            
+            
         })
 
-        console.log(user);
+        
 
         return user;
     }
@@ -44,13 +64,14 @@ function AuthContextProvider({children}){
     //     addAdditionalInfoUser(user);
     // }
 
-    const addAdditionalInfoUser = async(user)=>{
-        await addDoc(usersCollection, {id: user.uid, name: formState.name.value, phoneNumber: 
-            formState.phoneNumber.value, isAdmin: false})
+    const addAdditionalInfoUser = async(user, {name, phoneNumber})=>{
+        console.log(user);
+        console.log(user.uid);
+        await addDoc(clientsCollection, {id: user.uid, name: name, 
+            phoneNumber: phoneNumber, isAdmin: false})
     }
 
 
-    const usersCollection = collection(db, 'users')
 
 
     return (
@@ -61,19 +82,25 @@ function AuthContextProvider({children}){
                 await signOut(myFirebase.auth);
             }, 
             //to sign with email
-            singInEmail: async()=>{
-                try{
-                    const user = await createUserWithEmailAndPassword(auth, formState.email.value, 
-                        formState.password.value)
-                    
-                    addAdditionalInfoUser(user);
-                    setErrorMessage('')
-                }catch(err){
-                    switch(err.code){
-                        case 'auth/email-already-in-use': 
-                            setErrorMessage('el correo ya esta registrado')
-                    }
-                }
+            registerEmail: async({name, phoneNumber, email, password})=>{
+                console.log("entramos a la funcion")
+                const userCredential = await createUserWithEmailAndPassword(auth, 
+                    email.value, 
+                    password.value)
+                
+                addAdditionalInfoUser(userCredential.user, {name: name.value, 
+                    phoneNumber: phoneNumber.value});
+
+                console.log("user created")
+            }, 
+            signInEmail: async({email, password})=>{
+                signInWithEmailAndPassword(auth, email.value, password.value)
+                    .then((userCredential)=>{
+                        console.log(userCredential);
+                    })
+                    .catch((err)=>{
+                        console.log(err)
+                    })
             }}}>
             {children}
         </AuthContext.Provider>
