@@ -58,10 +58,10 @@ function AdminProductAdd(){
     const onSubmitProduct = async(event)=>{
         try{
             event.preventDefault();
-            await addDoc(productsCollection, {name: formData.name.value, 
+            const docRef = await addDoc(productsCollection, {name: formData.name.value, 
             description: formData.description.value, category: formData.category.value, 
-            price: formData.price.value})
-            imageUpload();
+            price: formData.price.value});
+            imageUpload(docRef.id);
             dispatchFormData({type: 'RESET'})
         }catch(err){
             console.log(err)
@@ -69,16 +69,22 @@ function AdminProductAdd(){
         
     }
 
-    const imageUpload = ()=>{
+    const imageUpload = (productId)=>{
         if(formData.imageUpload.value == null) return;
-        const imageRef = ref(storage, `/products/${formData.imageUpload.value.name + v4()}`);
-        uploadBytes(imageRef, formData.imageUpload.value)
+        //ref es el lugar a donde quieres guardar la imagen
+        let imageId 
+        let imageRef 
+        for(let file of formData.imageUpload.value){
+            imageId = file.name + v4();
+            imageRef = ref(storage, `/products/${productId}/${imageId}`);
+            uploadBytes(imageRef, file)
             .then((response)=>{
                 console.log("image uploaded")
             })
             .catch((err)=>{
                 console.log(err)
             })
+        }
 
     }
 
@@ -135,8 +141,8 @@ function AdminProductAdd(){
                         <label className=" self-start " for="imagen">
                             Imagen del producto </label>
                         <input type="file" name="imagen" onChange={({target: {files}})=>{
-                            dispatchFormData({type: 'INPUT_IMAGE', value: files[0]})
-                        }}/>
+                            dispatchFormData({type: 'INPUT_IMAGE', value: files})
+                        }} multiple/>
                         <Button type="submit" variant="contained">Subir</Button>
                     </Form> 
     )
