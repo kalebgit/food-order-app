@@ -15,8 +15,9 @@ import './Home.scss'
 // import Item from '../../components/Item/Item';
 
 import { getDocs, collection } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
-import { db } from '../../config/firebase';
+import { useEffect, useState} from 'react';
+import { ref, listAll, getDownloadURL} from 'firebase/storage';
+import { db, storage } from '../../config/firebase';
 import Scroll from '../../components/Scroll/Scroll';
 import Item from '../../components/Item/Item';
 
@@ -48,18 +49,50 @@ function Home(){
     
 
     useEffect(()=>{
+        
         const getProducts = async ()=>{
             const data = await getDocs(productsCollection)
             const filteredData = data.docs.map((doc)=>{
+                
                 return {
+                    id: doc.id,
                     //returns all the fields as attributes to js
                     ...doc.data(), 
-                    id: doc.id
+                    images: [],
+                    
                 }
             });
-    
+            console.log(filteredData)
             setProducts(filteredData);
+            setProducts((prevState)=>{
+                return prevState.map((element)=>{
+                    const imageFolderRef = ref(storage, `/products/${element.id}`)    
+                    listAll(imageFolderRef)
+                        .then((response)=>{
+                            response.items.forEach((item)=>{
+                                getDownloadURL(item)
+                                    .then((url)=>{
+                                        element = {...element, images: 
+                                            [...element.images, url]}
+                                    })      
+                            })
+                            
+                        })
+                        .catch((err)=>{
+                            console.log(err)
+                        })
+                })
+                
+            })
+            // setProducts((prevState)=>{
+            //     console.log(prevState);
+            //     return prevState
+            // })
         }
+
+
+
+        
 
         getProducts();
         return ()=>{}
@@ -67,12 +100,13 @@ function Home(){
 
     return (
         <main className="main-home min-h-screen pt-14">
-            <Typography variant='h2' component="h1" className="text-center main-home__title"  
+            <Typography key="home-title" variant='h2' component="h1" className="text-center main-home__title"  
                 gutterBottom>Food Mood</Typography>
-            <Scroll horizontal>
-                <Item vertical product={{}}/>
-                <Item vertical product={{}}/>
-                <Item vertical product={{}}/>
+            <Scroll key="scroll-bar" horizontal>
+                {products.length > 0 ? 
+                products.map((element)=><Item  product={{...element}} vertical/>)
+                : 
+                <h2>Cargando...</h2>}
             </Scroll>
         </main>
     )
