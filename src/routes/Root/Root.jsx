@@ -6,29 +6,25 @@ import { ReactDOM } from 'react';
 //components
 import Navbar from '../../page/Navbar/Navbar'
 import Effect from '../../page/Effect/Effect';
-import AuthContext from '../../Contexts/AuthContext';
-import { db } from '../../config/firebase';
+
+import AuthContextProvider from '../../Contexts/Auth/AuthContextProvider';
+
 
 function Root(){
-    const [data, setData] = useState({isLoggedIn: true, isAdmin: true});
-
+    
+    
+    
     return (
         <>
-            <AuthContext.Provider value={{
-                isLoggedIn: data.isLoggedIn,
-                isAdmin: data.isAdmin,
-                onChangeLogged: ()=>{
-                        console.log("prevState changed")
-                        setData( (prevState)=>{
-                            return {isLoggedIn: !prevState.isLoggedIn}
-                        })
-                    }   
-                }}>
+            <AuthContextProvider>
 
                 <Navbar/>
                 <Outlet/>
 
-            </AuthContext.Provider>
+            </AuthContextProvider>
+                
+
+            
 
         </>
     )
