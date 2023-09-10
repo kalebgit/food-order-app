@@ -62,6 +62,24 @@ function Home(){
                     
                 }
             });
+
+            for(let i = 0; i < filteredData.length; i++){
+                let refFolderImages = ref(storage, `products/${filteredData[i].id}`)
+                let {items} = await listAll(refFolderImages);
+                console.log("los items")
+                console.log(items)
+                let images = []
+                for(let y = 0; y < items.length; y++){
+                    const url = await getDownloadURL(items[y]);
+                    console.log(url);
+                    images.push(url)
+                }
+                console.log(images)
+                filteredData[i]  = {...filteredData[i], images: [...images]}
+            }
+            console.log("el nuevo estado es")
+            console.log(filteredData);
+
             setProducts(filteredData);
             // setProducts((prevState)=>{
             //     console.log(prevState);
@@ -69,36 +87,7 @@ function Home(){
             // })
         }
 
-        const updateImages = async()=>{
-            console.log("se entra a la funcion de imagenes")
-            let newState = []
-            for(let i = 0; i < products.length; i++){
-                const refFolderImages = ref(storage, `products/${products[i].id}`)
-                const {items} = await listAll(refFolderImages);
-                console.log("los items")
-                console.log(items)
-                let images = []
-                for(let y = 0; y < items.length; i++){
-                    const url = await getDownloadURL(items[0]);
-                    console.log(url);
-                    images.push(url)
-                }
-                console.log(images)
-                newState.push({...products[i], images: [...images]})
-            }
-            console.log("el nuevo estado es")
-            console.log(newState);
-            setProducts((prevState)=>{
-                return newState;
-            });
-        }
-            
-        
-
-        
-
         getProducts();
-        updateImages();
         return ()=>{}
     }, [])
 

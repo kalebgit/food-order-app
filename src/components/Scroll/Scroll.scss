@@ -1,5 +1,7 @@
 .scroll-visible{
+    overflow-x: auto;
     &::-webkit-scrollbar{
         display: none;
+        width: 0;
     }
 }
