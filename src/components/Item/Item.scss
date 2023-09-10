@@ -1,4 +1,8 @@
 .item{
     width: 25vw;
     background-position: center;
+
+    &__{
+        background-color: rgba(0, 0, 0, 0.5);
+    }
 }

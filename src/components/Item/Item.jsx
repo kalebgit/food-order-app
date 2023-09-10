@@ -6,15 +6,14 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import './Item.scss'
 import { useEffect, useState } from 'react';
 
-function Item({horizontal, vertical, product: {id, name, price, image}}){
+function Item({horizontal, vertical, product: {id, name, price, images}}){
 
-    
+    console.log(images);
 
     return (
         <article className="item h-96 p-4 rounded-md flex flex-col justify-between items-stretch"
-            style={{backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${image})`}}
-            id={id}
-            key={id}>
+            style={{backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${images[0]})`}}
+            id={id}>
                 <div>
                     <IconButton >
                         <AddShoppingCartIcon fontSize='large'/>

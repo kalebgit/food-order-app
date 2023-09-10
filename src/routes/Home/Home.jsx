@@ -62,39 +62,43 @@ function Home(){
                     
                 }
             });
-            console.log(filteredData)
             setProducts(filteredData);
-            setProducts((prevState)=>{
-                return prevState.map((element)=>{
-                    const imageFolderRef = ref(storage, `/products/${element.id}`)    
-                    listAll(imageFolderRef)
-                        .then((response)=>{
-                            response.items.forEach((item)=>{
-                                getDownloadURL(item)
-                                    .then((url)=>{
-                                        element = {...element, images: 
-                                            [...element.images, url]}
-                                    })      
-                            })
-                            
-                        })
-                        .catch((err)=>{
-                            console.log(err)
-                        })
-                })
-                
-            })
             // setProducts((prevState)=>{
             //     console.log(prevState);
             //     return prevState
             // })
         }
 
-
+        const updateImages = async()=>{
+            console.log("se entra a la funcion de imagenes")
+            let newState = []
+            for(let i = 0; i < products.length; i++){
+                const refFolderImages = ref(storage, `products/${products[i].id}`)
+                const {items} = await listAll(refFolderImages);
+                console.log("los items")
+                console.log(items)
+                let images = []
+                for(let y = 0; y < items.length; i++){
+                    const url = await getDownloadURL(items[0]);
+                    console.log(url);
+                    images.push(url)
+                }
+                console.log(images)
+                newState.push({...products[i], images: [...images]})
+            }
+            console.log("el nuevo estado es")
+            console.log(newState);
+            setProducts((prevState)=>{
+                return newState;
+            });
+        }
+            
+        
 
         
 
         getProducts();
+        updateImages();
         return ()=>{}
     }, [])
 
@@ -104,7 +108,10 @@ function Home(){
                 gutterBottom>Food Mood</Typography>
             <Scroll key="scroll-bar" horizontal>
                 {products.length > 0 ? 
-                products.map((element)=><Item  product={{...element}} vertical/>)
+                products.map((element)=>{
+                    console.log(element);
+                    return <Item key={element.id} product={element}/>
+                })
                 : 
                 <h2>Cargando...</h2>}
             </Scroll>
