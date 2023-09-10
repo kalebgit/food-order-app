@@ -2,7 +2,7 @@
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import MenuIcon from '@mui/icons-material/Menu';
-import { IconButton, Toolbar, Tooltip } from '@mui/material';
+import { Badge, IconButton, Toolbar, Tooltip } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import CloseIcon from '@mui/icons-material/Close';
 import { Button } from '@mui/material';
@@ -27,13 +27,15 @@ import Effect from '../Effect/Effect';
 import { LogoutOutlined } from '@mui/icons-material';
 import AuthContext from '../../Contexts/Auth/AuthContext';
 import { Link } from 'react-router-dom';
+import CartContext from '../../Contexts/Cart/CartContext';
 
 
 
 
 
 function Navbar({}){
-    const context = useContext(AuthContext)
+    const authContext = useContext(AuthContext)
+    const cartContext = useContext(CartContext)
 
     //show states
     const [showNavbar, setShowNavbar] = useState(false);
@@ -57,7 +59,7 @@ function Navbar({}){
 
     return (
         <header className=" bg-white">
-            {context.isLoggedIn &&
+            {authContext.isLoggedIn &&
             <section className="relative flex flex-row flex-nowrap justify-between 
             p-3">
 
@@ -71,12 +73,14 @@ function Navbar({}){
 
                 <section>
                     <Tooltip title="cart" arrow>
-                        <Link to="/cart">
-                            <IconButton>
-                                <ShoppingCartIcon fontSize='large'/>
-                            </IconButton>
-                        </Link>
-                        
+                        <Badge badgeContent={cartContext.cart.length}
+                            invisible={cartContext.cart.length > 0}>
+                            <Link to="/cart">
+                                <IconButton>
+                                    <ShoppingCartIcon fontSize='large'/>
+                                </IconButton>
+                            </Link>
+                        </Badge>
                     </Tooltip>
                     <Tooltip title="account" arrow>
                         <IconButton onClick={onClickSubMenuAccount}>
@@ -89,7 +93,7 @@ function Navbar({}){
                     'sub-menu__show' : ''}`}>
                         <NavLinksContainer>
                             <Button endIcon={<LogoutIcon/>} 
-                                onClick={context.logout}>Cerrar Sesion</Button>
+                                onClick={authContext.logout}>Cerrar Sesion</Button>
                         </NavLinksContainer>
                     </div>
                     
@@ -119,7 +123,7 @@ function Navbar({}){
                     <Navicon title="stats" onClick={onClickToPage} 
                         startIcon={<QueryStatsIcon/>}/>
 
-                    {context.isAdmin &&
+                    {authContext.isAdmin &&
                     <Navicon title="admin" onClick={onClickToPage} 
                         startIcon={<AdminPanelSettingsIcon/>}
                         path="/admin"/>}

@@ -1,7 +1,9 @@
 .item{
-    width: 25vw;
+    height: 25rem;
     background-position: center;
     background-size: cover;
+    scroll-snap-align: start;
+    
 
     &__{
         background-color: rgba(0, 0, 0, 0.5);

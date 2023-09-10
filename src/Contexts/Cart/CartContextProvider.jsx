@@ -11,10 +11,10 @@ function CartContextProvider({children}){
     const context = useContext(AuthContext);
 
     const [cart, setCart] = useState([]);
-    
+    let cartCollection;
     onAuthStateChanged(auth, (authUser)=>{
         if(authUser){
-            let cartCollection;
+            
         const getInfo = async()=>{
             const user = await context.getUser(authUser.uid);
             if(context.isLoggedIn){
@@ -29,9 +29,10 @@ function CartContextProvider({children}){
             if(context.isLoggedIn){
                     getDocs(cartCollection)
                         .then((response)=>{
+                            console.log(response.docs[0].data())
                             setCart((prevState)=>{
-                                response.docs.map((product)=>{
-                                    return {...product.data()}
+                                response.docs.map((cart)=>{
+                                    return [...cart.data()]
                                 })
                             })
                         })   
@@ -40,7 +41,7 @@ function CartContextProvider({children}){
         
         const orderFunction = async()=>{
             await getInfo()
-            await getCart
+            await getCart()
         }
 
         orderFunction();
@@ -51,14 +52,18 @@ function CartContextProvider({children}){
         
         return ()=>{}
         
-    }, [])
+    }, [cart])
 
 
     const addProductCart = async(product)=>{
         if(context.isLoggedIn){
             const docRef = doc(db, cartCollection, product.id )
-            setDoc(docRef, {name: product.name, price: product.price, 
-                category: product.category, description: product.description})
+            const product = {name: product.name, price: product.price, 
+                category: product.category, description: product.description}
+            setDoc(docRef, product)
+            setCart((prevState)=>{
+                return {...prevState, product}
+            })
         }
     }
 

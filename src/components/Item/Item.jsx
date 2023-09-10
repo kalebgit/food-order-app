@@ -4,7 +4,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 import './Item.scss'
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import CartContext from '../../Contexts/Cart/CartContext';
 
 function Item({horizontal, vertical, product: {id, name, price, category, description, 
@@ -13,15 +13,19 @@ function Item({horizontal, vertical, product: {id, name, price, category, descri
     const cartContext = useContext(CartContext)
 
     return (
-        <article className="item h-96  p-4 rounded-md flex flex-col justify-between 
-            items-stretch"
+        <article className="item p-4 rounded-md flex flex-col justify-between 
+            items-stretch overflow-hidden "
             style={{backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), 
             rgba(0, 0, 0, 0.5)), url(${images[0]})`}}
             id={id}>
-                <div>
+                <div className='w-full'>
                     <Tooltip title="Agregar al carrito">
                         <IconButton style={{color: 'green'}}
-                            onClick={cartContext.addProductCart}>
+                            onClick={()=>{
+                                cartContext.addProductCart({id: id, name: name, 
+                                price: price, category: category, 
+                                description: description})
+                            }}>
                             <AddShoppingCartIcon fontSize='large' 
                                 style={{color: 'white'}}/>
                         </IconButton>
@@ -37,7 +41,7 @@ function Item({horizontal, vertical, product: {id, name, price, category, descri
                     
                 </div>
 
-                <div className='flex flex-col flex-nowrap justify-start items-start 
+                <div className='w-full flex flex-col flex-nowrap justify-start items-start 
                         gap-1'>
                     <h3 className="text-4xl text-white">{name}</h3>
                     <p className='text-2xl text-green-400'>$ {price}</p>

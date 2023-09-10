@@ -3,8 +3,7 @@ import './Scroll.scss'
 
 function Scroll({children, vertical, horizontal}){
     return (
-        <section className={`px-8 h-max flex ${horizontal && 
-            'flex-row justify-start items-center'} gap-5 h-max`}>
+        <section className={`relative scroll-visible w-full h-max gap-5`}>
             {children}
         </section>
     )

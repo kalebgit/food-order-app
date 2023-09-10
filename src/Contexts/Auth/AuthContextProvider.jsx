@@ -15,9 +15,6 @@ function AuthContextProvider({children}){
     const [isAdmin, setIsAdmin] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-
-    const clientsCollection = 
-
     onAuthStateChanged(auth, (user)=>{
         if(user){
             console.log("tiene cuenta iniciada")
