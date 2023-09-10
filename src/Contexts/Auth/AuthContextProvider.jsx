@@ -16,7 +16,7 @@ function AuthContextProvider({children}){
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 
-    const clientsCollection = collection(db, 'clients')
+    const clientsCollection = 
 
     onAuthStateChanged(auth, (user)=>{
         if(user){
@@ -46,7 +46,7 @@ function AuthContextProvider({children}){
     })
 
     const getUser = async(uid)=>{
-        const data = await getDocs(clientsCollection)
+        const data = await getDocs(collection(db, 'clients'))
         // console.log(data)
         // console.log(data.docs);
 
@@ -56,11 +56,12 @@ function AuthContextProvider({children}){
             return data.id = uid
             
         })
+        
 
-        const userObject = {...user.data()};
+        const userObject = {...user.data(), docId: user.id};
 
-        // console.log("objeto recuperado: ")
-        // console.log( userObject)
+        console.log("objeto recuperado: ")
+        console.log( userObject)
 
         return userObject;
     }
@@ -74,7 +75,7 @@ function AuthContextProvider({children}){
     const addAdditionalInfoUser = async(user, {name, phoneNumber})=>{
         console.log(user);
         console.log(user.uid);
-        await addDoc(clientsCollection, {id: user.uid, name: name, 
+        await addDoc(collection(db, 'clients'), {id: user.uid, name: name, 
             phoneNumber: phoneNumber, isAdmin: false})
     }
 
@@ -110,7 +111,8 @@ function AuthContextProvider({children}){
                     .catch((err)=>{
                         console.log(err)
                     })
-            }}}>
+            },
+            getUser: getUser}}>
             {children}
         </AuthContext.Provider>
     )

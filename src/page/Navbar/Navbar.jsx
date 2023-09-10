@@ -26,6 +26,7 @@ import './Navbar.scss'
 import Effect from '../Effect/Effect';
 import { LogoutOutlined } from '@mui/icons-material';
 import AuthContext from '../../Contexts/Auth/AuthContext';
+import { Link } from 'react-router-dom';
 
 
 
@@ -70,9 +71,12 @@ function Navbar({}){
 
                 <section>
                     <Tooltip title="cart" arrow>
-                        <IconButton onClick={()=>{}}>
-                            <ShoppingCartIcon fontSize='large'/>
-                        </IconButton>
+                        <Link to="/cart">
+                            <IconButton>
+                                <ShoppingCartIcon fontSize='large'/>
+                            </IconButton>
+                        </Link>
+                        
                     </Tooltip>
                     <Tooltip title="account" arrow>
                         <IconButton onClick={onClickSubMenuAccount}>

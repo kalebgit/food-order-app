@@ -5,10 +5,12 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 import './Item.scss'
 import { useEffect, useState } from 'react';
+import CartContext from '../../Contexts/Cart/CartContext';
 
-function Item({horizontal, vertical, product: {id, name, price, images}}){
+function Item({horizontal, vertical, product: {id, name, price, category, description, 
+    images}}){
 
-    
+    const cartContext = useContext(CartContext)
 
     return (
         <article className="item h-96  p-4 rounded-md flex flex-col justify-between 
@@ -18,7 +20,8 @@ function Item({horizontal, vertical, product: {id, name, price, images}}){
             id={id}>
                 <div>
                     <Tooltip title="Agregar al carrito">
-                        <IconButton style={{color: 'green'}}>
+                        <IconButton style={{color: 'green'}}
+                            onClick={cartContext.addProductCart}>
                             <AddShoppingCartIcon fontSize='large' 
                                 style={{color: 'white'}}/>
                         </IconButton>
@@ -40,8 +43,8 @@ function Item({horizontal, vertical, product: {id, name, price, images}}){
                     <p className='text-2xl text-green-400'>$ {price}</p>
                     <div className=' text-lg text-gray-400 flex flex-row flex-wrap 
                         justify-start items-start divide-x-2 divide-gray-400'>
-                        <p className="px-2 text-md">[data]</p>
-                        <p className="px-2 text-md">[data]</p>
+                        <p className="px-2 text-md">{category}</p>
+                        <p className="px-2 text-md"></p>
                     </div>
                 </div>
         </article>

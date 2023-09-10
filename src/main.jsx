@@ -18,6 +18,7 @@ import Home from './routes/Home/Home';
 
 import AdminHome from './routes/Admin/AdminHome/AdminHome';
 import AdminProduct from './routes/Admin/AdminProduct/AdminProduct/AdminProduct';
+import Cart from './routes/Cart/Cart';
 
 const router = createBrowserRouter([
   {
@@ -32,7 +33,12 @@ const router = createBrowserRouter([
       {
         path: "/home",
         element: <Home/>
-      }, {
+      }, 
+      {
+        path: "/cart",
+        element: <Cart/>
+      },
+      {
         path: "/admin",
         element: <AdminHome/>,
         children: [

@@ -8,6 +8,7 @@ import Navbar from '../../page/Navbar/Navbar'
 import Effect from '../../page/Effect/Effect';
 
 import AuthContextProvider from '../../Contexts/Auth/AuthContextProvider';
+import CartContextProvider from '../../Contexts/Cart/CartContextProvider';
 
 
 function Root(){
@@ -17,10 +18,10 @@ function Root(){
     return (
         <>
             <AuthContextProvider>
-
-                <Navbar/>
-                <Outlet/>
-
+                <CartContextProvider>
+                    <Navbar/>
+                    <Outlet/>
+                </CartContextProvider>
             </AuthContextProvider>
                 
 

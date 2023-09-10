@@ -92,7 +92,7 @@ function Home(){
     }, [])
 
     return (
-        <main className="main-home min-h-screen pt-14">
+        <main className="main-home min-h-screen pt-14 overflow-x-visible">
             <Typography key="home-title" variant='h2' component="h1" className="text-center main-home__title"  
                 gutterBottom>Food Mood</Typography>
             <Scroll key="scroll-bar" horizontal>
