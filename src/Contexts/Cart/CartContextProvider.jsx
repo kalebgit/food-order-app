@@ -29,7 +29,7 @@ function CartContextProvider({children}){
             if(context.isLoggedIn){
                     getDocs(cartCollection)
                         .then((response)=>{
-                            console.log(response.docs[0].data())
+                            console.log(response.docs)
                             setCart((prevState)=>{
                                 response.docs.map((cart)=>{
                                     return [...cart.data()]
@@ -55,11 +55,13 @@ function CartContextProvider({children}){
     }, [cart])
 
 
-    const addProductCart = async(product)=>{
+    const addProductCart = async(productSubmit)=>{
+        console.log("se agrega al carrito: ")
+        console.log(productSubmit)
         if(context.isLoggedIn){
-            const docRef = doc(db, cartCollection, product.id )
-            const product = {name: product.name, price: product.price, 
-                category: product.category, description: product.description}
+            const docRef = doc(db, cartCollection, productSubmit.id )
+            const product = {name: productSubmit.name, price: productSubmit.price, 
+                category: productSubmit.category, description: productSubmit.description}
             setDoc(docRef, product)
             setCart((prevState)=>{
                 return {...prevState, product}

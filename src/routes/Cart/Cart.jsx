@@ -16,7 +16,7 @@ function Cart(){
     return (
         <main>
             <StackContainer>
-                {cartContext.cart.length > 0 && 
+                {cartContext.cart && cartContext.cart.length > 0 && 
                 cartContext.cart.map((product)=>{
                     return <Item {...product}/>
                 })}

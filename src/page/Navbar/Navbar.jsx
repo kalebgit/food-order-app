@@ -73,7 +73,7 @@ function Navbar({}){
 
                 <section>
                     <Tooltip title="cart" arrow>
-                        <Badge badgeContent={cartContext.cart.length}
+                        <Badge badgeContent={cartContext.cart && cartContext.cart.length}
                             invisible={cartContext.cart.length > 0}>
                             <Link to="/cart">
                                 <IconButton>
