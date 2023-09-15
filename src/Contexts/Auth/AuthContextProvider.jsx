@@ -3,7 +3,7 @@ import {  onAuthStateChanged, signInWithEmailAndPassword } from '@firebase/auth'
 import { collection, getDocs, addDoc, getDoc, doc} from '@firebase/firestore';
 import { auth } from '../../config/firebase';
 import AuthContext from "./AuthContext";
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 
 //firebase
 import {db} from '../../config/firebase'
@@ -15,23 +15,27 @@ function AuthContextProvider({children}){
     const [isAdmin, setIsAdmin] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    onAuthStateChanged(auth, (user)=>{
+    useEffect(()=>{
+        const user =  JSON.parse(localStorage.getItem("user"));
         if(user){
-            console.log("tiene cuenta iniciada")
+            // console.log("tiene cuenta iniciada")
             setIsLoggedIn(true)
-            getUser(user.uid)
+            setTimeout(()=>{
+                getUser(auth.currentUser.uid)
                 .then((currentUserDoc)=>{
-                    console.log("el usuario actual es: ");
-                    console.log(currentUserDoc)
+                    // console.log("el usuario actual es: ");
+                    // console.log(currentUserDoc)
                     
                     if(currentUserDoc.isAdmin){
-                        console.log("el usuario acutal es admin")
+                        // console.log("el usuario acutal es admin")
                         setIsAdmin(true);
                     }
                 })
                 .catch((err)=>{
                     console.log(err)
                 })
+            }, 1000)
+            
             
             
             
@@ -40,7 +44,7 @@ function AuthContextProvider({children}){
             setIsLoggedIn(false);
             setIsAdmin(false);
         }
-    })
+    }, [])
 
     const getUser = async(uid)=>{
         const data = await getDocs(collection(db, 'clients'))
@@ -57,8 +61,8 @@ function AuthContextProvider({children}){
 
         const userObject = {...user.data(), docId: user.id};
 
-        console.log("objeto recuperado: ")
-        console.log( userObject)
+        // console.log("objeto recuperado: ")
+        // console.log( userObject)
 
         return userObject;
     }
@@ -72,8 +76,10 @@ function AuthContextProvider({children}){
     const addAdditionalInfoUser = async(user, {name, phoneNumber})=>{
         console.log(user);
         console.log(user.uid);
-        await addDoc(collection(db, 'clients'), {id: user.uid, name: name, 
+        const doc = await addDoc(collection(db, 'clients'), {id: user.uid, name: name, 
             phoneNumber: phoneNumber, isAdmin: false})
+
+        return doc
     }
 
 
@@ -84,6 +90,7 @@ function AuthContextProvider({children}){
             isLoggedIn: isLoggedIn,
             isAdmin: isAdmin, 
             logout: async()=>{
+                localStorage.removeItem("user");
                 console.log("cerrando sesion")
                 await signOut(auth);
                 console.log("sesion cerrada")
@@ -91,18 +98,33 @@ function AuthContextProvider({children}){
             //to sign with email
             registerEmail: async({name, phoneNumber, email, password})=>{
                 console.log("entramos a la funcion")
+                
                 const userCredential = await createUserWithEmailAndPassword(auth, 
                     email.value, 
                     password.value)
                 
-                addAdditionalInfoUser(userCredential.user, {name: name.value, 
-                    phoneNumber: phoneNumber.value});
+                const additionalInfo = {name: name.value, 
+                    phoneNumber: phoneNumber.value}
 
+                const docId = await addAdditionalInfoUser(userCredential.user, additionalInfo);
+
+                localStorage.setItem("user", JSON.stringify({
+                    email: email.value,
+                    docId: docId
+                }))
                 console.log("user created")
             }, 
             signInEmail: async({email, password})=>{
                 signInWithEmailAndPassword(auth, email.value, password.value)
                     .then((userCredential)=>{
+                        getUser(auth.currentUser.uid)
+                            .then((user)=>{
+                                localStorage.setItem("user", JSON.stringify({
+                                    email: email.value,
+                                    docId: user.docId
+                                }))        
+                            })
+                        
                         console.log(userCredential);
                     })
                     .catch((err)=>{

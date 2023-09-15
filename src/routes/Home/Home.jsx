@@ -66,19 +66,19 @@ function Home(){
             for(let i = 0; i < filteredData.length; i++){
                 let refFolderImages = ref(storage, `products/${filteredData[i].id}`)
                 let {items} = await listAll(refFolderImages);
-                console.log("los items")
-                console.log(items)
+                // console.log("los items")
+                // console.log(items)
                 let images = []
                 for(let y = 0; y < items.length; y++){
                     const url = await getDownloadURL(items[y]);
-                    console.log(url);
+                    // console.log(url);
                     images.push(url)
                 }
-                console.log(images)
+                // console.log(images)
                 filteredData[i]  = {...filteredData[i], images: [...images]}
             }
-            console.log("el nuevo estado es")
-            console.log(filteredData);
+            // console.log("el nuevo estado es")
+            // console.log(filteredData);
 
             setProducts(filteredData);
             // setProducts((prevState)=>{
@@ -98,7 +98,7 @@ function Home(){
             <Scroll key="scroll-bar" horizontal>
                 {products.length > 0 ? 
                 products.map((element)=>{
-                    console.log(element);
+                    // console.log(element);
                     return <Item key={element.id} product={element}/>
                 })
                 : 
