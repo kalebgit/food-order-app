@@ -73,8 +73,11 @@ function Navbar({}){
 
                 <section>
                     <Tooltip title="cart" arrow>
-                        <Badge badgeContent={cartContext.cart && cartContext.cart.length}
-                            invisible={cartContext.cart && cartContext.cart.length == 0}>
+                        <Badge badgeContent={cartContext.cart && 
+                        cartContext.cart.length}
+                            invisible={cartContext.cart && 
+                            cartContext.cart.length == 0}
+                        color="primary">
                             <Link to="/cart">
                                 <IconButton>
                                     <ShoppingCartIcon fontSize='large'/>

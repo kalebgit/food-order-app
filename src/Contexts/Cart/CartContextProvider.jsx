@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import CartContext from "./CartContext";
 import { auth, db } from "../../config/firebase";
-import { getDocs, collection, addDoc, doc, setDoc } from "firebase/firestore";
+import { getDocs, collection, addDoc, doc, setDoc, getDoc } from "firebase/firestore";
 import AuthContext from "../Auth/AuthContext";
+import { onAuthStateChanged } from "firebase/auth";
 
 
 function CartContextProvider({children}){
@@ -10,52 +11,79 @@ function CartContextProvider({children}){
     const context = useContext(AuthContext);
 
     const [cart, setCart] = useState([]);
+    const [user, setUser] = useState({});
     
+    onAuthStateChanged(auth, (user)=>{
+        if(user){
+            setUser(user)
+        }
+    })
 
-    useEffect( ()=>{
+    useEffect(()=>{
+        const getCart = async()=>{
+            console.log("entramos a la function getCart")
+            console.log(user)
+            if(user){
+                    updateCart();
+            }
+        }
 
-            const getCart = async()=>{
-                console.log("entramos a la function getCart")
-                console.log(context.isLoggedIn)
-                if(context.isLoggedIn){
-                        getDocs(getCartCollection())
+        getCart();
+
+        return ()=>{}
+    }, [])
+
+    const updateCart = ()=>{
+        getDocs(getCartCollection(true))
                             .then((response)=>{
-                                console.log(resposne)
+                                console.log(response)
                                 setCart((prevState)=>{
                                     const newCart = response.docs.map((product)=>{
-                                        return [...prevState, ...product.data()]
+                                        return {...product.data()};
                                     })
                                     console.log(newCart)
                                     return newCart;
                                 })
-                            })   
-                }
-            }
-    
-            getCart();
-            
-        return ()=>{}
-        
-    }, [cart])
+                            })           
+    }
 
-    const getCartCollection = ()=>{
+    const getCartCollection = (bycollection)=>{
         const user =  JSON.parse(localStorage.getItem("user"));
-        return collection(db, `clients/${user.docId}/cart`);
+        if(bycollection == true){
+            return collection(db, `clients/${user.docId}/cart`);
+        }else{
+            return `clients/${user.docId}/cart`
+        }
+        
+    }
+
+    const modifyQuantity = async(product)=>{
+        const docRef = doc(db, getCartCollection(false), product.name)
+        const docSnap = await getDoc(docRef);
+
+        if(docSnap.exists()){
+            const previosState = {...docSnap.data()}
+            return {...previosState, quantity: previosState.quantity + 1}
+        }else{
+            return product
+        }
     }
 
     const addProductCart = async(productSubmit)=>{
         console.log(getCartCollection());
         console.log(productSubmit.id);
         if(context.isLoggedIn){
-            const docRef = doc(db, getCartCollection(), productSubmit.id )
             const product = {name: productSubmit.name, price: productSubmit.price, 
-                category: productSubmit.category, description: productSubmit.description}
+                category: productSubmit.category, 
+                description: productSubmit.description, quantity: 1}
+            
+            const modifiedProduct = await modifyQuantity(product);
             console.log("se agrega al carrito: ")
             console.log(product)
-            setDoc(docRef, product)
-            setCart((prevState)=>{
-                return {...prevState, product}
-            })
+            await setDoc(doc(db, getCartCollection(false), 
+                ("" +productSubmit.name)), 
+                modifiedProduct)
+            updateCart();
         }
     }
 

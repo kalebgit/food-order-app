@@ -3,7 +3,7 @@ import {  onAuthStateChanged, signInWithEmailAndPassword } from '@firebase/auth'
 import { collection, getDocs, addDoc, getDoc, doc} from '@firebase/firestore';
 import { auth } from '../../config/firebase';
 import AuthContext from "./AuthContext";
-import {useEffect, useState} from 'react'
+import {useState} from 'react'
 
 //firebase
 import {db} from '../../config/firebase'
@@ -15,13 +15,11 @@ function AuthContextProvider({children}){
     const [isAdmin, setIsAdmin] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    useEffect(()=>{
-        const user =  JSON.parse(localStorage.getItem("user"));
+    onAuthStateChanged(auth, (user)=>{
         if(user){
             // console.log("tiene cuenta iniciada")
             setIsLoggedIn(true)
-            setTimeout(()=>{
-                getUser(auth.currentUser.uid)
+            getUser(user.uid)
                 .then((currentUserDoc)=>{
                     // console.log("el usuario actual es: ");
                     // console.log(currentUserDoc)
@@ -34,8 +32,6 @@ function AuthContextProvider({children}){
                 .catch((err)=>{
                     console.log(err)
                 })
-            }, 1000)
-            
             
             
             
@@ -44,7 +40,7 @@ function AuthContextProvider({children}){
             setIsLoggedIn(false);
             setIsAdmin(false);
         }
-    }, [])
+    })
 
     const getUser = async(uid)=>{
         const data = await getDocs(collection(db, 'clients'))
