@@ -17,12 +17,19 @@ function AdminProductDelete(){
         const getProducts = async()=>{
             const data = await getDocs(productsCollection);
             const finalData = data.docs.map((doc)=>{
-                return {...doc.data(), id: doc.id}
+                const previousData = {...doc.data()}
+                return {name: previousData.name, 
+                        price: previousData.price,
+                        category: previousData.category,
+                        id: doc.id}
             })
 
             console.log(finalData);
 
-            setProducts(finalData)
+            setProducts((prevState)=>{
+                console.log(finalData)
+                return finalData;
+            })
 
         }
 
@@ -44,6 +51,7 @@ function AdminProductDelete(){
         setNumChanges((prevState)=>{return prevState + 1});
     }
 
+    
     return (
         <>
             {products.length > 0 ? 

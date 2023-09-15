@@ -1,4 +1,4 @@
-.item{
+.item-vertical{
     height: 25rem;
     background-position: center;
     background-size: cover;
@@ -8,4 +8,10 @@
     &__{
         background-color: rgba(0, 0, 0, 0.5);
     }
+}
+
+.item-horizontal{
+    height: 25vh;
+
+    box-shadow: 0 0 .8rem .1rem rgba(0, 0, 0, .1);
 }

@@ -99,7 +99,7 @@ function Home(){
                 {products.length > 0 ? 
                 products.map((element)=>{
                     // console.log(element);
-                    return <Item key={element.id} product={element}/>
+                    return <Item key={element.id} product={element} vertical/>
                 })
                 : 
                 <h2>Cargando...</h2>}

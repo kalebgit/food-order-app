@@ -5,6 +5,7 @@ function InformationRow({element, extraRows}){
 
     const getAttributes = ()=>{
         const array = [];
+        console.log(element);
         for(let attribute in element){
             array.push(element[attribute]);
         }

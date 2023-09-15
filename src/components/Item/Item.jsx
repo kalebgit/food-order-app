@@ -7,18 +7,29 @@ import './Item.scss'
 import { useContext, useEffect, useState } from 'react';
 import CartContext from '../../Contexts/Cart/CartContext';
 
+//material ui
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+
 function Item({horizontal, vertical, product: {id, name, price, category, description, 
-    images}}){
+    images, quantity}}){
 
     const cartContext = useContext(CartContext)
 
+    
+
     return (
-        <article className="item p-4 rounded-md flex flex-col justify-between 
-            items-stretch overflow-hidden "
-            style={{backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), 
-            rgba(0, 0, 0, 0.5)), url(${images[0]})`}}
+        <article className={` rounded-md  overflow-hidden ${
+            vertical && " item-vertical p-4 flex flex-col justify-between items-stretch "
+        } ${horizontal && " item-horizontal p-2 w-full grid grid-cols-3 grid-flow-col grid-rows-1 " + 
+            " justify-items-start items-center gap-8"}`}
+            style={vertical ? {backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), 
+            rgba(0, 0, 0, 0.5)), url(${images[0]})`} : {}}
             id={id}>
-                <div className='w-full'>
+
+                {vertical &&
+                <>
+                    <div className='w-full'>
                     <Tooltip title="Agregar al carrito">
                         <IconButton style={{color: 'green'}}
                             onClick={()=>{
@@ -51,6 +62,38 @@ function Item({horizontal, vertical, product: {id, name, price, category, descri
                         <p className="px-2 text-md"></p>
                     </div>
                 </div>
+                </>}
+                
+
+                {horizontal &&
+                <>
+                    
+                    <div className="h-full rounded-lg overflow-hidden">
+                        <img className="h-full" src={images[0]} alt={name}/>
+                    </div>
+                    
+                    <div className='h-full flex flex-col flex-nowrap justify-between
+                        items-start gap-1'>
+                        <h4 className="text-3xl font-bold">{name}</h4>
+                        <p className="text-lg ">{category}</p>
+                        <span className="text-4xl">$ {price}</span>
+                    </div>
+
+                    <div className="h-full justify-self-center flex flex-col justify-center items-center
+                        gap-2">
+                        <p className='text-2xl'>Cantidad</p>
+                        <div className='h-full flex flex-row flex-nowrap 
+                        justify-center items-center gap-3'>
+                            <IconButton >
+                                <AddIcon fontSize="large"/>
+                            </IconButton>
+                            <span className="text-2xl font-bold">{quantity}</span>
+                            <IconButton>
+                                <RemoveIcon  fontSize="large"/>
+                            </IconButton>
+                        </div>
+                    </div>
+                </>}
         </article>
     )
 }
