@@ -8,10 +8,13 @@ import { db } from "../../../../config/firebase";
 import { storage } from "../../../../config/firebase";
 import {ref, uploadBytes} from 'firebase/storage'
 import { v4 } from "uuid";
+import AdviceContext from "../../../../Contexts/Advice/AdviceContext";
 
 
 
 function AdminProductAdd(){
+
+    const adviceContext = useContext(AdviceContext)
 
     const categoryCollection = collection(db, "productCategories")
     const productsCollection = collection(db, "products");
@@ -63,8 +66,10 @@ function AdminProductAdd(){
             price: formData.price.value});
             imageUpload(docRef.id);
             dispatchFormData({type: 'RESET'})
+            return Promise.resolve()
         }catch(err){
             console.log(err)
+            return Promise.reject()
         }
         
     }
@@ -91,7 +96,11 @@ function AdminProductAdd(){
 
     return (
         <Form title="Agregar Producto" className="rounded-md 
-                        bg-slate-100" onSubmit={onSubmitProduct}
+                        bg-slate-100" onSubmit={()=>{
+                            adviceContext.addProductDataBaseToast(
+                                onSubmitProduct()
+                            )
+                        }}
                         method="" action="">
                         <TextField id="name" name="name" key="name" label="Nombre" 
                             variant= "outlined"

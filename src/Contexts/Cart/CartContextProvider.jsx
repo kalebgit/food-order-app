@@ -65,6 +65,8 @@ function CartContextProvider({children}){
             console.log("new cart")
             console.log(newData);
             return newData});
+
+        return Promise.resolve
     }
 
     const getCartCollection = (bycollection)=>{
@@ -90,12 +92,12 @@ function CartContextProvider({children}){
                 console.log(newProduct);
                 return  newProduct
             }else{
-                return previousState
+                return Promise.reject()
             }
             
         }else{
             console.log("no existe el docuemnto")
-            return product
+            return Promise.reject()
         }
     }
 
@@ -111,9 +113,11 @@ function CartContextProvider({children}){
             await setDoc(doc(db, getCartCollection(false), 
                 ("" +productSubmit.id)), 
                 modifiedProduct)
-            updateCart();
+            return updateCart();
+            
         }else{
             console.log("no tiene acceso porque no tiene cuenta")
+            return Promise.reject()
         }
     }
 
@@ -123,7 +127,7 @@ function CartContextProvider({children}){
             await deleteDoc(docRef);
             console.log("producto eliminado")
         }
-        updateCart();
+        return updateCart();
     }
 
     return (

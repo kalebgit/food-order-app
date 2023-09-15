@@ -9,6 +9,8 @@ import Effect from '../../page/Effect/Effect';
 
 import AuthContextProvider from '../../Contexts/Auth/AuthContextProvider';
 import CartContextProvider from '../../Contexts/Cart/CartContextProvider';
+import AdviceContextProvider from '../../Contexts/Advice/AdviceContextProvider';
+import { ToastContainer } from 'react-toastify';
 
 
 function Root(){
@@ -19,8 +21,22 @@ function Root(){
         <>
             <AuthContextProvider>
                 <CartContextProvider>
-                    <Navbar/>
-                    <Outlet/>
+                    <AdviceContextProvider>
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={1000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="colored"
+                    />
+                        <Navbar/>
+                        <Outlet/>
+                    </AdviceContextProvider>
                 </CartContextProvider>
             </AuthContextProvider>
                 

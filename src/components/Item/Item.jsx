@@ -12,12 +12,14 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import ClearIcon from '@mui/icons-material/Clear';
 import { ToastContainer } from 'react-toastify';
+import AdviceContext from '../../Contexts/Advice/AdviceContext';
+import AdviceContextProvider from '../../Contexts/Advice/AdviceContextProvider';
 
 function Item({horizontal, vertical, product: {id, name, price, category, description, 
     images, quantity}}){
 
     const cartContext = useContext(CartContext)
-
+    const adviceContext = useContext(AdviceContext)
     
 
     return (
@@ -37,9 +39,12 @@ function Item({horizontal, vertical, product: {id, name, price, category, descri
                     <Tooltip title="Agregar al carrito">
                         <IconButton style={{color: 'green'}}
                             onClick={()=>{
-                                cartContext.addProductCart({id: id, name: name, 
-                                price: price, category: category, 
-                                description: description}, true)
+                                adviceContext.addCartToast(
+                                    cartContext.addProductCart({id: id, name: name, 
+                                        price: price, category: category, 
+                                        description: description}, true)
+                                )
+                                
                             }}>
                             <AddShoppingCartIcon fontSize='large' 
                                 style={{color: 'white'}}/>
@@ -72,22 +77,29 @@ function Item({horizontal, vertical, product: {id, name, price, category, descri
                 {horizontal &&
                 <>  
                     <div className="absolute top-0 right-0">
-                        <IconButton onClick={()=>{
-                            const productSent = {
-                                id: id,
-                                name: name,
-                                description: description, 
-                                category: category,
-                                price: price, 
-                                images: images, 
-                                quantity: quantity
-                            }
-                            console.log("product sent: ")
-                            console.log(productSent)
-                            cartContext.deleteProductCart(productSent)
-                        }}>
-                            <ClearIcon fontSize='large'/>
-                        </IconButton>
+                        <Tooltip placement="bottom" title="eliminar" arrow>
+                            <IconButton onClick={()=>{
+                                const productSent = {
+                                    id: id,
+                                    name: name,
+                                    description: description, 
+                                    category: category,
+                                    price: price, 
+                                    images: images, 
+                                    quantity: quantity
+                                }
+                                adviceContext.removeCartToast(                                
+                                cartContext.deleteProductCart(productSent)
+                                )
+                                console.log("product sent: ")
+                                console.log(productSent)
+                                
+                                
+                            }}>
+                                <ClearIcon fontSize='large'/>
+                            </IconButton>
+                        </Tooltip>
+                        
                     </div>
                     
                     <div className="h-full rounded-lg overflow-hidden">
@@ -119,7 +131,11 @@ function Item({horizontal, vertical, product: {id, name, price, category, descri
                                 }
                                 console.log("product sent: ")
                                 console.log(productSent)
-                                cartContext.addProductCart(productSent, false)
+
+                                adviceContext.removeQuantityToast(
+                                    cartContext.addProductCart(productSent, false)
+                                )
+                                
                             }}>
                                 <RemoveIcon  fontSize="large"/>
                             </IconButton>
@@ -136,7 +152,11 @@ function Item({horizontal, vertical, product: {id, name, price, category, descri
                                 }
                                 console.log("product sent: ")
                                 console.log(productSent)
-                                cartContext.addProductCart(productSent, true)
+
+                                adviceContext.addQuantityToast(
+                                    cartContext.addProductCart(productSent, true)
+                                )
+                                
                             }}>
                                 <AddIcon fontSize="large"/>
                             </IconButton>

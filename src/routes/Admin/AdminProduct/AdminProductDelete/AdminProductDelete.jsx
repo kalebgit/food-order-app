@@ -2,15 +2,19 @@ import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { db } from "../../../../config/firebase";
 import DataTable from "../../../../components/Tables/DataTable/DataTable";
+import AdviceContext from "../../../../Contexts/Advice/AdviceContext";
 
 
 
 function AdminProductDelete(){
 
+    const adviceContext = useContext(AdviceContext)
+
     const [numChanges, setNumChanges] = useState(0);
     const [products, setProducts] = useState([]);
 
     const productsCollection = collection(db, "products");
+
 
     useEffect(()=>{
         
@@ -55,7 +59,12 @@ function AdminProductDelete(){
     return (
         <>
             {products.length > 0 ? 
-            <DataTable data={products} title="Productos" onDeleteData={onDeleteProduct}/>
+            <DataTable data={products} title="Productos" 
+            onDeleteData={()=>{
+                adviceContext.removeProductDataBaseToast(
+                    onDeleteProduct()
+                )
+            }}/>
             : 
             <h2 className="font-bold">No hay productos</h2>
             }
