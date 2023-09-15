@@ -10,6 +10,7 @@ import CartContext from '../../Contexts/Cart/CartContext';
 //material ui
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import ClearIcon from '@mui/icons-material/Clear';
 
 function Item({horizontal, vertical, product: {id, name, price, category, description, 
     images, quantity}}){
@@ -19,7 +20,7 @@ function Item({horizontal, vertical, product: {id, name, price, category, descri
     
 
     return (
-        <article className={` rounded-md  overflow-hidden ${
+        <article className={`relative rounded-md  overflow-hidden ${
             vertical && " item-vertical p-4 flex flex-col justify-between items-stretch "
         } ${horizontal && " item-horizontal p-2 w-full grid grid-cols-3 grid-flow-col grid-rows-1 " + 
             " justify-items-start items-center gap-8"}`}
@@ -35,7 +36,7 @@ function Item({horizontal, vertical, product: {id, name, price, category, descri
                             onClick={()=>{
                                 cartContext.addProductCart({id: id, name: name, 
                                 price: price, category: category, 
-                                description: description})
+                                description: description}, false)
                             }}>
                             <AddShoppingCartIcon fontSize='large' 
                                 style={{color: 'white'}}/>
@@ -66,10 +67,29 @@ function Item({horizontal, vertical, product: {id, name, price, category, descri
                 
 
                 {horizontal &&
-                <>
+                <>  
+                    <div className="absolute top-0 right-0">
+                        <IconButton onClick={()=>{
+                            const productSent = {
+                                id: id,
+                                name: name,
+                                description: description, 
+                                category: category,
+                                price: price, 
+                                images: images, 
+                                quantity: quantity
+                            }
+                            console.log("product sent: ")
+                            console.log(productSent)
+                            cartContext.deleteProductCart(productSent)
+                        }}>
+                            <ClearIcon fontSize='large'/>
+                        </IconButton>
+                    </div>
                     
                     <div className="h-full rounded-lg overflow-hidden">
-                        <img className="h-full" src={images[0]} alt={name}/>
+                        <img className="item-horizontal__imgage 
+                        h-full w-screen object-cover" src={images[0]} alt={name}/>
                     </div>
                     
                     <div className='h-full flex flex-col flex-nowrap justify-between
@@ -84,13 +104,40 @@ function Item({horizontal, vertical, product: {id, name, price, category, descri
                         <p className='text-2xl'>Cantidad</p>
                         <div className='h-full flex flex-row flex-nowrap 
                         justify-center items-center gap-3'>
-                            <IconButton >
-                                <AddIcon fontSize="large"/>
-                            </IconButton>
-                            <span className="text-2xl font-bold">{quantity}</span>
-                            <IconButton>
+                            <IconButton onClick={()=>{
+                                const productSent = {
+                                    id: id,
+                                    name: name,
+                                    description: description, 
+                                    category: category,
+                                    price: price, 
+                                    images: images, 
+                                    quantity: quantity
+                                }
+                                console.log("product sent: ")
+                                console.log(productSent)
+                                cartContext.addProductCart(productSent, false)
+                            }}>
                                 <RemoveIcon  fontSize="large"/>
                             </IconButton>
+                            <span className="text-2xl font-bold">{quantity}</span>
+                            <IconButton onClick={()=>{
+                                const productSent = {
+                                    id: id,
+                                    name: name,
+                                    description: description, 
+                                    category: category,
+                                    price: price, 
+                                    images: images, 
+                                    quantity: quantity
+                                }
+                                console.log("product sent: ")
+                                console.log(productSent)
+                                cartContext.addProductCart(productSent, true)
+                            }}>
+                                <AddIcon fontSize="large"/>
+                            </IconButton>
+                            
                         </div>
                     </div>
                 </>}

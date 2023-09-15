@@ -74,7 +74,9 @@ function Navbar({}){
                 <section>
                     <Tooltip title="cart" arrow>
                         <Badge badgeContent={cartContext.cart && 
-                        cartContext.cart.length}
+                        cartContext.cart.reduce((acumulator, element)=>{
+                            return acumulator + element.quantity
+                        }, 0)}
                             invisible={cartContext.cart && 
                             cartContext.cart.length == 0}
                         color="primary">

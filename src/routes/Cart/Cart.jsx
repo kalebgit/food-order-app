@@ -15,7 +15,7 @@ function Cart(){
         'en espera de ser enviado', 'en camino', 'entregado', 'fin']
     console.log(cartContext.cart);
 
-
+    
 
     return (
         <main className=" min-h-screen divide-x-2 divide-green-900">
@@ -31,7 +31,7 @@ function Cart(){
 
             <StackContainer className="w-2/6 h-full"
                 key="cart-order" >
-                    
+
             </StackContainer>
             
         </main>

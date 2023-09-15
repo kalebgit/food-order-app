@@ -6,6 +6,7 @@ import AuthContext from "../Auth/AuthContext";
 import { onAuthStateChanged } from "firebase/auth";
 import { getCollapseUtilityClass } from "@mui/material";
 import { getDownloadURL, listAll, ref } from "firebase/storage";
+import { AddToQueueRounded } from "@mui/icons-material";
 
 
 function CartContextProvider({children}){
@@ -59,7 +60,11 @@ function CartContextProvider({children}){
             newData[i]  = {...newData[i], images: [...images]}
         }     
 
-        setCart(newData);
+        
+        setCart(()=>{
+            console.log("new cart")
+            console.log(newData);
+            return newData});
     }
 
     const getCartCollection = (bycollection)=>{
@@ -78,30 +83,37 @@ function CartContextProvider({children}){
 
         if(docSnap.exists()){
             const previousState = {...docSnap.data()}
-            if(previousState.quantity > 1){
-                return  {...previousState, quantity: previousState.quantity + quantity}
+            if((previousState.quantity > 1 && quantity < 0) || 
+                (previousState.quantity >= 1 && quantity > 0)){
+                const newProduct = {...previousState, quantity: previousState.quantity + quantity}
+                console.log("new product");
+                console.log(newProduct);
+                return  newProduct
             }else{
                 return previousState
             }
             
         }else{
+            console.log("no existe el docuemnto")
             return product
         }
     }
 
-    const addProductCart = async(productSubmit)=>{
-        console.log(getCartCollection());
-        console.log(productSubmit.id);
+    const addProductCart = async(productSubmit, add)=>{
+        // console.log(getCartCollection());
+        // console.log(productSubmit.id);
         if(context.isLoggedIn){
             const product = {...productSubmit, quantity: 1}
             
-            const modifiedProduct = await modifyQuantity(product, (1));
+            const modifiedProduct = await modifyQuantity(product, (add ? (1) : (-1)));
             console.log("se agrega al carrito: ")
             console.log(product)
             await setDoc(doc(db, getCartCollection(false), 
                 ("" +productSubmit.id)), 
                 modifiedProduct)
             updateCart();
+        }else{
+            console.log("no tiene acceso porque no tiene cuenta")
         }
     }
 
@@ -111,6 +123,7 @@ function CartContextProvider({children}){
             await deleteDoc(docRef);
             console.log("producto eliminado")
         }
+        updateCart();
     }
 
     return (
