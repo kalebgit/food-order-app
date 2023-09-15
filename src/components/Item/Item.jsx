@@ -36,7 +36,7 @@ function Item({horizontal, vertical, product: {id, name, price, category, descri
                             onClick={()=>{
                                 cartContext.addProductCart({id: id, name: name, 
                                 price: price, category: category, 
-                                description: description}, false)
+                                description: description}, true)
                             }}>
                             <AddShoppingCartIcon fontSize='large' 
                                 style={{color: 'white'}}/>
