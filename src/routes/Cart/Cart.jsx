@@ -8,7 +8,7 @@ import { useContext } from "react";
 import { Button, Stack, cardActionAreaClasses } from "@mui/material";
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import { SubjectSharp } from "@mui/icons-material";
-
+import { ToastContainer } from "react-toastify";
 
 function Cart(){
     const cartContext = useContext(CartContext)
@@ -20,7 +20,7 @@ function Cart(){
 
     return (
         <main className=" min-h-screen divide-x-2 divide-green-900">
-
+            
             <h1 className="text-center text-4xl font-bold mb-10">Carrito</h1>
 
             {(cartContext.cart && cartContext.cart.length > 0) ? 

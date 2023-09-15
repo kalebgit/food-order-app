@@ -11,6 +11,7 @@ import CartContext from '../../Contexts/Cart/CartContext';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import ClearIcon from '@mui/icons-material/Clear';
+import { ToastContainer } from 'react-toastify';
 
 function Item({horizontal, vertical, product: {id, name, price, category, description, 
     images, quantity}}){
@@ -28,6 +29,8 @@ function Item({horizontal, vertical, product: {id, name, price, category, descri
             rgba(0, 0, 0, 0.5)), url(${images[0]})`} : {}}
             id={id}>
 
+                
+                
                 {vertical &&
                 <>
                     <div className='w-full'>
